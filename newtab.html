@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    <link rel="stylesheet" href="styles/newtab.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/clock.css">
+</head>
+<body>
+    <div class="container">
+        <div class="settings-btn" id="settings-btn">
+            <i class="fas fa-cog"></i>
+        </div>
+
+        <div class="clock-container">
+            <div class="clock">
+                <div class="wrap">
+                    <span class="hour"></span>
+                    <span class="minute"></span>
+                    <span class="second"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+
+        <section class="search-section">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" data-i18n="searchPlaceholder" placeholder="Search the web...">
+                    <button id="search-btn" class="search-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="bookmarks-section">
+            <h2 data-i18n="bookmarks">Bookmarks</h2>
+            <div class="bookmarks-grid" id="bookmarks-grid">
+            </div>
+        </section>
+    </div>
+
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 data-i18n="settings">Settings</h3>
+            
+            <div class="settings-section">
+                <h4 data-i18n="appearance">Appearance</h4>
+                <div class="form-group">
+                    <label for="wallpaper-select" data-i18n="wallpaper">Wallpaper</label>
+                    <select id="wallpaper-select">
+                        <option value="gradient">Gradient</option>
+                        <option value="flat-blue">Flat Blue</option>
+                        <option value="flat-purple">Flat Purple</option>
+                        <option value="flat-green">Flat Green</option>
+                        <option value="flat-orange">Flat Orange</option>
+                        <option value="flat-red">Flat Red</option>
+                        <option value="flat-gray">Flat Gray</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label data-i18n="customWallpaper">Custom Wallpaper</label>
+                    
+                    <div class="wallpaper-tabs">
+                        <button type="button" class="wallpaper-tab active" data-tab="upload" data-i18n="uploadImage">Upload Image</button>
+                        <button type="button" class="wallpaper-tab" data-tab="url" data-i18n="urlImage">URL Image</button>
+                    </div>
+                    
+                    <div id="upload-wallpaper-content" class="wallpaper-content">
+                        <div class="custom-wallpaper-container">
+                            <input type="file" id="custom-wallpaper-input" accept="image/*" style="display: none;">
+                            <button type="button" class="file-btn" id="choose-wallpaper-btn">
+                                <i class="fas fa-upload"></i>
+                                <span data-i18n="chooseImage">Choose Image</span>
+                            </button>
+                            <div class="upload-info">
+                                <small>Supports: JPEG, PNG, GIF, WebP, SVG • Max: 50MB</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="url-wallpaper-content" class="wallpaper-content" style="display: none;">
+                        <div class="url-wallpaper-container">
+                            <div class="url-input-group">
+                                <input type="url" id="wallpaper-url-input" data-i18n="enterImageUrl" placeholder="Enter image URL...">
+                                <button type="button" class="url-btn" id="url-wallpaper-btn">
+                                    <i class="fas fa-download"></i>
+                                    <span data-i18n="loadFromUrl">Load from URL</span>
+                                </button>
+                            </div>
+                            <div class="url-info">
+                                <small>Examples: Unsplash, Pexels, or any direct image URL</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="custom-wallpaper-preview" class="wallpaper-preview"></div>
+                    <button type="button" class="remove-btn" style="display: none;" id="remove-wallpaper-btn">
+                        <i class="fas fa-trash"></i>
+                        <span data-i18n="removeCustomWallpaper">Remove Custom Wallpaper</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4 data-i18n="timeLanguage">Time & Language</h4>
+                <div class="form-group">
+                    <label for="time-format" data-i18n="timeFormat">Time Format</label>
+                    <select id="time-format">
+                        <option value="12">12-hour</option>
+                        <option value="24">24-hour</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="language" data-i18n="language">Language</label>
+                    <select id="language">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="ca">Català</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4 data-i18n="features">Features</h4>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="bookmarks-enabled">
+                        <span class="checkmark"></span>
+                        <span data-i18n="bookmarksEnabled">Show bookmarks</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" id="save-settings" data-i18n="saveSettings">Save Settings</button>
+        </div>
+    </div>
+
+    <script src="scripts/newtab.js"></script>
+</body>
+</html>
