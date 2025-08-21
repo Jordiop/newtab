@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewTab Pro - Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-result {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>NewTab Pro - Extension Test</h1>
+        <p>This page tests the basic functionality of the NewTab Pro extension.</p>
+        
+        <div id="test-results"></div>
+        
+        <h2>Manual Tests</h2>
+        <ul>
+            <li>Load the extension in Chrome by going to chrome://extensions/</li>
+            <li>Enable "Developer mode"</li>
+            <li>Click "Load unpacked" and select this directory</li>
+            <li>Open a new tab to see the NewTab Pro interface</li>
+            <li>Test the settings modal by clicking the gear icon</li>
+            <li>Test bookmark loading (requires bookmark permissions)</li>
+            <li>Test search functionality</li>
+            <li>Test wallpaper changes</li>
+            <li>Test language switching</li>
+        </ul>
+    </div>
+
+    <script>
+        const testResults = document.getElementById('test-results');
+        
+        function addTestResult(test, status, message) {
+            const div = document.createElement('div');
+            div.className = `test-result ${status}`;
+            div.innerHTML = `<strong>${test}:</strong> ${message}`;
+            testResults.appendChild(div);
+        }
+
+        // Test manifest.json structure
+        fetch('./manifest.json')
+            .then(response => response.json())
+            .then(manifest => {
+                addTestResult('Manifest JSON', 'pass', 'Valid JSON structure');
+                
+                // Check required fields
+                const requiredFields = ['name', 'version', 'manifest_version', 'permissions'];
+                let allFieldsPresent = true;
+                
+                requiredFields.forEach(field => {
+                    if (!manifest[field]) {
+                        addTestResult(`Manifest Field: ${field}`, 'fail', 'Missing required field');
+                        allFieldsPresent = false;
+                    }
+                });
+                
+                if (allFieldsPresent) {
+                    addTestResult('Manifest Fields', 'pass', 'All required fields present');
+                }
+                
+                // Check permissions
+                const expectedPermissions = ['storage', 'bookmarks', 'scripting', 'tabs'];
+                const hasAllPermissions = expectedPermissions.every(perm => 
+                    manifest.permissions.includes(perm)
+                );
+                
+                if (hasAllPermissions) {
+                    addTestResult('Permissions', 'pass', 'All required permissions present');
+                } else {
+                    addTestResult('Permissions', 'fail', 'Missing required permissions');
+                }
+            })
+            .catch(error => {
+                addTestResult('Manifest JSON', 'fail', 'Failed to load or parse manifest.json');
+            });
+
+        // Test file existence
+        const filesToCheck = [
+            'newtab.html',
+            'popup.html',
+            'scripts/newtab.js',
+            'scripts/popup.js',
+            'styles/newtab.css',
+            'styles/popup.css',
+            'styles/clock.css'
+        ];
+
+        filesToCheck.forEach(file => {
+            fetch(`./${file}`)
+                .then(response => {
+                    if (response.ok) {
+                        addTestResult(`File: ${file}`, 'pass', 'File exists and accessible');
+                    } else {
+                        addTestResult(`File: ${file}`, 'fail', `HTTP ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    addTestResult(`File: ${file}`, 'fail', 'File not accessible');
+                });
+        });
+
+        addTestResult('Test Suite', 'info', 'Extension structure tests completed. See manual tests below.');
+    </script>
+</body>
+</html>

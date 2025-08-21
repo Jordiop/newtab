@@ -4,21 +4,25 @@
     "version": "1.1.0",
     "description": "A beautiful and modern new tab page with productivity features and custom wallpapers",
     "permissions": [
-      "storage"
-    ],
-    "optional_permissions": [
-      "bookmarks"
+      "storage",
+      "bookmarks",
+      "scripting",
+      "tabs"
     ],
     "chrome_url_overrides": {
       "newtab": "newtab.html"
     },
     "icons": {
-      "16": "icons/icon.svg",
-      "32": "icons/icon.svg", 
-      "48": "icons/icon.svg",
-      "128": "icons/icon.svg"
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png", 
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     },
     "action": {
-      "default_title": "NewTab Pro Settings"
-    }
+      "default_title": "NewTab Pro Settings",
+      "default_popup": "popup.html"
+    },
+    "host_permissions": [
+      "chrome://newtab/*"
+    ]
   }
