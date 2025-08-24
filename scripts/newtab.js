@@ -40,7 +40,7 @@ const searchEngines = {
 
 const config = {
   clockUpdateInterval: 1000,
-  maxBookmarks: 12,
+  maxBookmarks: 50,
   supportedImageTypes: [
     "image/jpeg",
     "image/png",
@@ -235,6 +235,7 @@ function initializeElements() {
   elements.searchBtn = document.getElementById("search-btn");
 
   elements.bookmarksGrid = document.getElementById("bookmarks-grid");
+  elements.createFolderBtn = document.getElementById("create-folder-btn");
   elements.settingsBtn = document.getElementById("settings-btn");
   elements.settingsModal = document.getElementById("settings-modal");
   elements.wallpaperSelect = document.getElementById("wallpaper-select");
@@ -808,6 +809,15 @@ function setupEventListeners() {
       setTranslations();
     });
   }
+
+  if (elements.createFolderBtn) {
+    elements.createFolderBtn.addEventListener("click", function () {
+      const folderName = prompt('Enter name for new folder:');
+      if (folderName && folderName.trim() !== '') {
+        createBookmarkFolder(folderName.trim());
+      }
+    });
+  }
 }
 
 async function handleCustomWallpaperUpload(event) {
@@ -1002,26 +1012,70 @@ function loadBrowserBookmarks() {
 }
 
 function extractBookmarks(bookmarkTreeNodes) {
-  const bookmarks = [];
+  const result = [];
 
-  function traverse(nodes) {
+  function traverse(nodes, isRoot = false) {
     if (!nodes || !Array.isArray(nodes)) return;
 
     nodes.forEach((node) => {
-      if (node.url && bookmarks.length < config.maxBookmarks) {
-        bookmarks.push({
+      if (node.url) {
+        result.push({
+          id: node.id,
           title: node.title || "Untitled",
           url: node.url,
           icon: getFaviconUrl(node.url),
+          isFolder: false,
+          parentId: node.parentId
         });
-      } else if (node.children && bookmarks.length < config.maxBookmarks) {
-        traverse(node.children);
+      } else if (node.children) {
+        const isRootContainer = node.title === "Bookmarks bar" || 
+                               node.title === "Other bookmarks" || 
+                               node.title === "Mobile bookmarks";
+        
+        if (isRootContainer) {
+          traverse(node.children, true);
+        } else {
+          const folder = {
+            id: node.id,
+            title: node.title,
+            url: null,
+            icon: null,
+            isFolder: true,
+            children: [],
+            expanded: false,
+            parentId: node.parentId
+          };
+          result.push(folder);
+          traverse(node.children, false);
+        }
       }
     });
   }
 
   traverse(bookmarkTreeNodes);
-  return bookmarks;
+  return organizeBookmarksIntoHierarchy(result);
+}
+
+function organizeBookmarksIntoHierarchy(flatItems) {
+  const itemMap = new Map();
+  const rootItems = [];
+
+  flatItems.forEach(item => {
+    itemMap.set(item.id, item);
+  });
+
+  flatItems.forEach(item => {
+    if (item.parentId && itemMap.has(item.parentId)) {
+      const parent = itemMap.get(item.parentId);
+      if (parent.isFolder) {
+        parent.children.push(item);
+      }
+    } else {
+      rootItems.push(item);
+    }
+  });
+
+  return rootItems.slice(0, config.maxBookmarks);
 }
 
 function getFaviconUrl(url) {
@@ -1102,24 +1156,229 @@ function isBrave() {
 
 function createBookmarkElement(bookmark) {
   const div = document.createElement("div");
-  div.className = "bookmark-item";
-
-  const hasIcon = bookmark.icon && bookmark.icon.startsWith("http");
-
-  div.innerHTML = `
-        ${
-          hasIcon
-            ? `<img src="${bookmark.icon}" alt="" style="width: 16px; height: 16px; min-width: 16px;">`
-            : `<i class="fas fa-link"></i>`
-        }
+  
+  if (bookmark.isFolder) {
+    div.className = "bookmark-folder";
+    div.innerHTML = `
+      <div class="folder-header" data-bookmark-id="${bookmark.id}">
+        <i class="fas fa-folder${bookmark.expanded ? '-open' : ''}"></i>
         <span title="${bookmark.title}">${bookmark.title}</span>
+        <i class="fas fa-chevron-${bookmark.expanded ? 'down' : 'right'} folder-toggle"></i>
+      </div>
+      <div class="folder-content" style="display: ${bookmark.expanded ? 'block' : 'none'};">
+      </div>
     `;
 
-  div.addEventListener("click", function () {
-    window.open(bookmark.url, "_blank");
-  });
+    const folderHeader = div.querySelector('.folder-header');
+    const folderContent = div.querySelector('.folder-content');
+    
+    folderHeader.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggleFolder(bookmark, div);
+    });
+
+    addFolderContextMenu(folderHeader, bookmark);
+
+    if (bookmark.expanded && bookmark.children) {
+      bookmark.children.forEach(child => {
+        const childElement = createBookmarkElement(child);
+        childElement.classList.add('nested-bookmark');
+        folderContent.appendChild(childElement);
+      });
+    }
+  } else {
+    div.className = "bookmark-item";
+    const hasIcon = bookmark.icon && bookmark.icon.startsWith("http");
+
+    div.innerHTML = `
+      ${
+        hasIcon
+          ? `<img src="${bookmark.icon}" alt="" style="width: 16px; height: 16px; min-width: 16px;">`
+          : `<i class="fas fa-link"></i>`
+      }
+      <span title="${bookmark.title}">${bookmark.title}</span>
+    `;
+
+    div.addEventListener("click", function () {
+      window.open(bookmark.url, "_blank");
+    });
+  }
 
   return div;
+}
+
+function toggleFolder(folder, folderElement) {
+  folder.expanded = !folder.expanded;
+  
+  const folderIcon = folderElement.querySelector('.folder-header i:first-child');
+  const toggleIcon = folderElement.querySelector('.folder-toggle');
+  const folderContent = folderElement.querySelector('.folder-content');
+  
+  if (folder.expanded) {
+    folderIcon.className = 'fas fa-folder-open';
+    toggleIcon.className = 'fas fa-chevron-down folder-toggle';
+    folderContent.style.display = 'block';
+    
+    folderContent.innerHTML = '';
+    folder.children.forEach(child => {
+      const childElement = createBookmarkElement(child);
+      childElement.classList.add('nested-bookmark');
+      folderContent.appendChild(childElement);
+    });
+  } else {
+    folderIcon.className = 'fas fa-folder';
+    toggleIcon.className = 'fas fa-chevron-right folder-toggle';
+    folderContent.style.display = 'none';
+  }
+}
+
+function createBookmarkFolder(title, parentId = null) {
+  if (typeof chrome !== "undefined" && chrome.bookmarks && chrome.bookmarks.create) {
+    const folderData = {
+      title: title || "New Folder",
+      parentId: parentId || "1"
+    };
+    
+    chrome.bookmarks.create(folderData, function(result) {
+      if (chrome.runtime.lastError) {
+        console.error("Error creating folder:", chrome.runtime.lastError.message);
+        showNotification("Error creating folder", "error");
+      } else {
+        showNotification(`Folder "${title}" created successfully`, "success");
+        loadBrowserBookmarks();
+      }
+    });
+  } else {
+    showNotification("Bookmark management not available", "error");
+  }
+}
+
+function renameBookmarkFolder(bookmarkId, newTitle) {
+  if (typeof chrome !== "undefined" && chrome.bookmarks && chrome.bookmarks.update) {
+    chrome.bookmarks.update(bookmarkId, { title: newTitle }, function(result) {
+      if (chrome.runtime.lastError) {
+        console.error("Error renaming folder:", chrome.runtime.lastError.message);
+        showNotification("Error renaming folder", "error");
+      } else {
+        showNotification(`Folder renamed to "${newTitle}"`, "success");
+        loadBrowserBookmarks();
+      }
+    });
+  } else {
+    showNotification("Bookmark management not available", "error");
+  }
+}
+
+function deleteBookmarkFolder(bookmarkId) {
+  if (typeof chrome !== "undefined" && chrome.bookmarks && chrome.bookmarks.removeTree) {
+    chrome.bookmarks.removeTree(bookmarkId, function() {
+      if (chrome.runtime.lastError) {
+        console.error("Error deleting folder:", chrome.runtime.lastError.message);
+        showNotification("Error deleting folder", "error");
+      } else {
+        showNotification("Folder deleted successfully", "success");
+        loadBrowserBookmarks();
+      }
+    });
+  } else {
+    showNotification("Bookmark management not available", "error");
+  }
+}
+
+function addFolderContextMenu(folderElement, bookmark) {
+  folderElement.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    showFolderContextMenu(e.pageX, e.pageY, bookmark);
+  });
+}
+
+function showFolderContextMenu(x, y, bookmark) {
+  removeExistingContextMenu();
+  
+  const contextMenu = document.createElement('div');
+  contextMenu.className = 'folder-context-menu';
+  contextMenu.style.cssText = `
+    position: fixed;
+    top: ${y}px;
+    left: ${x}px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    min-width: 150px;
+    overflow: hidden;
+  `;
+  
+  const menuItems = [
+    { text: 'Rename Folder', icon: 'fas fa-edit', action: () => renameFolderDialog(bookmark) },
+    { text: 'Create Subfolder', icon: 'fas fa-folder-plus', action: () => createSubfolderDialog(bookmark.id) },
+    { text: 'Delete Folder', icon: 'fas fa-trash', action: () => deleteFolderDialog(bookmark) }
+  ];
+  
+  menuItems.forEach(item => {
+    const menuItem = document.createElement('div');
+    menuItem.className = 'context-menu-item';
+    menuItem.innerHTML = `<i class="${item.icon}"></i> ${item.text}`;
+    menuItem.style.cssText = `
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #333;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
+    `;
+    
+    menuItem.addEventListener('mouseenter', () => {
+      menuItem.style.backgroundColor = 'rgba(102, 126, 234, 0.1)';
+    });
+    
+    menuItem.addEventListener('mouseleave', () => {
+      menuItem.style.backgroundColor = 'transparent';
+    });
+    
+    menuItem.addEventListener('click', () => {
+      item.action();
+      removeExistingContextMenu();
+    });
+    
+    contextMenu.appendChild(menuItem);
+  });
+  
+  document.body.appendChild(contextMenu);
+  
+  document.addEventListener('click', removeExistingContextMenu, { once: true });
+}
+
+function removeExistingContextMenu() {
+  const existingMenu = document.querySelector('.folder-context-menu');
+  if (existingMenu) {
+    existingMenu.remove();
+  }
+}
+
+function renameFolderDialog(bookmark) {
+  const newName = prompt(`Rename folder "${bookmark.title}" to:`, bookmark.title);
+  if (newName && newName.trim() !== '' && newName !== bookmark.title) {
+    renameBookmarkFolder(bookmark.id, newName.trim());
+  }
+}
+
+function createSubfolderDialog(parentId) {
+  const folderName = prompt('Enter name for new subfolder:');
+  if (folderName && folderName.trim() !== '') {
+    createBookmarkFolder(folderName.trim(), parentId);
+  }
+}
+
+function deleteFolderDialog(bookmark) {
+  const confirmDelete = confirm(`Are you sure you want to delete the folder "${bookmark.title}" and all its contents?`);
+  if (confirmDelete) {
+    deleteBookmarkFolder(bookmark.id);
+  }
 }
 
 function showNotification(message, type = "info") {
