@@ -8,7 +8,6 @@ const elements = {
   settingsModal: null,
   wallpaperSelect: null,
   defaultSearchEngineSelect: null,
-  timeFormatSelect: null,
   languageSelect: null,
   bookmarksEnabledCheckbox: null,
   saveSettingsBtn: null,
@@ -70,13 +69,11 @@ const translations = {
     appearance: "Appearance",
     search: "Search",
     defaultSearchEngine: "Default Search Engine",
-    timeLanguage: "Time & Language",
     features: "Features",
     wallpaper: "Wallpaper",
     customWallpaper: "Custom Wallpaper",
     uploadImage: "Upload Image",
     urlImage: "URL Image",
-    timeFormat: "Time Format",
     language: "Language",
     bookmarksEnabled: "Show bookmarks",
     saveSettings: "Save Settings",
@@ -119,13 +116,11 @@ const translations = {
     appearance: "Apariencia",
     search: "Búsqueda",
     defaultSearchEngine: "Motor de búsqueda por defecto",
-    timeLanguage: "Hora e Idioma",
     features: "Características",
     wallpaper: "Fondo de pantalla",
     customWallpaper: "Fondo personalizado",
     uploadImage: "Subir Imagen",
     urlImage: "Imagen por URL",
-    timeFormat: "Formato de hora",
     language: "Idioma",
     bookmarksEnabled: "Mostrar marcadores",
     saveSettings: "Guardar Configuración",
@@ -162,13 +157,11 @@ const translations = {
     appearance: "Aparença",
     search: "Cerca",
     defaultSearchEngine: "Motor de cerca per defecte",
-    timeLanguage: "Hora i Llengua",
     features: "Funcions",
     wallpaper: "Fons d'escriptori",
     customWallpaper: "Fons personalitzat",
     uploadImage: "Pujar Imatge",
     urlImage: "Imatge per URL",
-    timeFormat: "Format d'hora",
     language: "Idioma",
     bookmarksEnabled: "Mostrar els marcadors",
     saveSettings: "Guardar Configuració",
@@ -201,9 +194,8 @@ const translations = {
 };
 
 const defaultSettings = {
-  wallpaper: "gradient",
+  wallpaper: "flat-gray",
   defaultSearchEngine: "google",
-  timeFormat: "12",
   language: "en",
   bookmarksEnabled: true,
 };
@@ -531,7 +523,7 @@ function applySettings(settings) {
     document.body.style.backgroundImage = "";
     document.body.setAttribute(
       "data-wallpaper",
-      settings.wallpaper || "gradient"
+      settings.wallpaper || "flat-gray"
     );
   }
 
@@ -560,18 +552,16 @@ function applyCustomWallpaper(wallpaperData) {
     document.body.style.backgroundImage = "";
     document.body.setAttribute(
       "data-wallpaper",
-      currentSettings.wallpaper || "gradient"
+      currentSettings.wallpaper || "flat-gray"
     );
   }
 }
 
 function populateSettingsForm(settings) {
   if (elements.wallpaperSelect)
-    elements.wallpaperSelect.value = settings.wallpaper || "gradient";
+    elements.wallpaperSelect.value = settings.wallpaper || "flat-gray";
   if (elements.defaultSearchEngineSelect)
     elements.defaultSearchEngineSelect.value = settings.defaultSearchEngine || "google";
-  if (elements.timeFormatSelect)
-    elements.timeFormatSelect.value = settings.timeFormat || "12";
   if (elements.languageSelect)
     elements.languageSelect.value = settings.language || "en";
   if (elements.bookmarksEnabledCheckbox)
@@ -618,13 +608,10 @@ function saveSettings() {
   const settings = {
     wallpaper: elements.wallpaperSelect
       ? elements.wallpaperSelect.value
-      : "gradient",
+      : "flat-gray",
     defaultSearchEngine: elements.defaultSearchEngineSelect
       ? elements.defaultSearchEngineSelect.value
       : "google",
-    timeFormat: elements.timeFormatSelect
-      ? elements.timeFormatSelect.value
-      : "12",
     language: elements.languageSelect ? elements.languageSelect.value : "en",
     bookmarksEnabled: elements.bookmarksEnabledCheckbox
       ? elements.bookmarksEnabledCheckbox.checked
@@ -750,12 +737,20 @@ function setupEventListeners() {
   }
 
   document.querySelectorAll(".close").forEach((closeBtn) => {
-    closeBtn.addEventListener("click", closeSettingsModal);
+    if (closeBtn.classList.contains("folder-close")) {
+      closeBtn.addEventListener("click", closeFolderPopup);
+    } else {
+      closeBtn.addEventListener("click", closeSettingsModal);
+    }
   });
 
   window.addEventListener("click", function (e) {
     if (elements.settingsModal && e.target === elements.settingsModal) {
       closeSettingsModal();
+    }
+    const folderModal = document.getElementById("folder-popup-modal");
+    if (folderModal && e.target === folderModal) {
+      closeFolderPopup();
     }
   });
 
@@ -1003,8 +998,9 @@ function loadBrowserBookmarks() {
 
 function extractBookmarks(bookmarkTreeNodes) {
   const bookmarks = [];
+  const folders = [];
 
-  function traverse(nodes) {
+  function traverse(nodes, parentPath = "") {
     if (!nodes || !Array.isArray(nodes)) return;
 
     nodes.forEach((node) => {
@@ -1013,15 +1009,58 @@ function extractBookmarks(bookmarkTreeNodes) {
           title: node.title || "Untitled",
           url: node.url,
           icon: getFaviconUrl(node.url),
+          type: "bookmark"
         });
-      } else if (node.children && bookmarks.length < config.maxBookmarks) {
-        traverse(node.children);
+      } else if (node.children && node.title && node.title !== "Bookmarks Bar" && node.title !== "Other Bookmarks") {
+        const folderPath = parentPath ? `${parentPath}/${node.title}` : node.title;
+        const childBookmarks = [];
+        const childFolders = [];
+        
+        // Extract bookmarks and folders from this folder
+        function extractFromFolder(folderNode) {
+          if (!folderNode.children) return;
+          
+          folderNode.children.forEach((child) => {
+            if (child.url) {
+              childBookmarks.push({
+                title: child.title || "Untitled",
+                url: child.url,
+                icon: getFaviconUrl(child.url),
+                type: "bookmark"
+              });
+            } else if (child.children && child.title) {
+              childFolders.push({
+                title: child.title,
+                type: "folder",
+                children: child.children
+              });
+            }
+          });
+        }
+        
+        extractFromFolder(node);
+        
+        if (childBookmarks.length > 0 || childFolders.length > 0) {
+          folders.push({
+            title: node.title,
+            path: folderPath,
+            type: "folder",
+            bookmarkCount: childBookmarks.length,
+            folderCount: childFolders.length,
+            children: childBookmarks // Store all bookmarks for the popup
+          });
+        }
+        
+        // Continue traversing for more bookmarks
+        traverse(node.children, folderPath);
+      } else if (node.children) {
+        traverse(node.children, parentPath);
       }
     });
   }
 
   traverse(bookmarkTreeNodes);
-  return bookmarks;
+  return { bookmarks, folders };
 }
 
 function getFaviconUrl(url) {
@@ -1033,7 +1072,7 @@ function getFaviconUrl(url) {
   }
 }
 
-function displayBrowserBookmarks(bookmarks) {
+function displayBrowserBookmarks(data) {
   if (!elements.bookmarksGrid) {
     console.error("Bookmarks grid not found");
     return;
@@ -1041,11 +1080,21 @@ function displayBrowserBookmarks(bookmarks) {
 
   elements.bookmarksGrid.innerHTML = "";
 
-  if (bookmarks.length === 0) {
+  const { bookmarks, folders } = data;
+  const totalItems = bookmarks.length + folders.length;
+
+  if (totalItems === 0) {
     displayBookmarksFallback("no_bookmarks");
     return;
   }
 
+  // Display folders first
+  folders.forEach((folder) => {
+    const folderElement = createFolderElement(folder);
+    elements.bookmarksGrid.appendChild(folderElement);
+  });
+
+  // Then display bookmarks
   bookmarks.forEach((bookmark) => {
     const bookmarkElement = createBookmarkElement(bookmark);
     elements.bookmarksGrid.appendChild(bookmarkElement);
@@ -1100,6 +1149,24 @@ function isBrave() {
   );
 }
 
+function createFolderElement(folder) {
+  const div = document.createElement("div");
+  div.className = "bookmark-item folder-item";
+
+  div.innerHTML = `
+        <i class="fas fa-folder folder-icon"></i>
+        <div class="folder-content">
+          <span class="folder-title" title="${folder.title}">${folder.title}</span>
+        </div>
+    `;
+
+  div.addEventListener("click", function () {
+    openFolderPopup(folder);
+  });
+
+  return div;
+}
+
 function createBookmarkElement(bookmark) {
   const div = document.createElement("div");
   div.className = "bookmark-item";
@@ -1120,6 +1187,71 @@ function createBookmarkElement(bookmark) {
   });
 
   return div;
+}
+
+function openFolderPopup(folder) {
+  const folderModal = document.getElementById("folder-popup-modal");
+  const folderTitle = document.querySelector(".folder-popup-title");
+  const folderBookmarksGrid = document.getElementById("folder-bookmarks-grid");
+
+  if (!folderModal || !folderTitle || !folderBookmarksGrid) {
+    console.error("Folder popup elements not found");
+    return;
+  }
+
+  // Update the title
+  folderTitle.textContent = `${folder.title} Bookmarks`;
+
+  // Clear existing bookmarks
+  folderBookmarksGrid.innerHTML = "";
+
+  // Add bookmarks to the grid
+  if (folder.children && folder.children.length > 0) {
+    folder.children.forEach((bookmark) => {
+      const bookmarkElement = createFolderBookmarkElement(bookmark);
+      folderBookmarksGrid.appendChild(bookmarkElement);
+    });
+  } else {
+    folderBookmarksGrid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; color: #666; padding: 2rem;">
+        <i class="fas fa-bookmark" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+        <p>No bookmarks in this folder</p>
+      </div>
+    `;
+  }
+
+  // Show the modal
+  folderModal.style.display = "block";
+}
+
+function createFolderBookmarkElement(bookmark) {
+  const div = document.createElement("div");
+  div.className = "folder-bookmark-item";
+
+  const hasIcon = bookmark.icon && bookmark.icon.startsWith("http");
+
+  div.innerHTML = `
+        ${
+          hasIcon
+            ? `<img src="${bookmark.icon}" alt="" style="width: 16px; height: 16px; min-width: 16px;">`
+            : `<i class="fas fa-link"></i>`
+        }
+        <span title="${bookmark.title}">${bookmark.title}</span>
+    `;
+
+  div.addEventListener("click", function () {
+    window.open(bookmark.url, "_blank");
+    closeFolderPopup();
+  });
+
+  return div;
+}
+
+function closeFolderPopup() {
+  const folderModal = document.getElementById("folder-popup-modal");
+  if (folderModal) {
+    folderModal.style.display = "none";
+  }
 }
 
 function showNotification(message, type = "info") {
@@ -1164,15 +1296,9 @@ function showNotification(message, type = "info") {
 
 function updateClock() {
   const now = new Date();
-  const timeFormat = currentSettings.timeFormat || "12";
-
-  let hours = now.getHours();
+  const hours = now.getHours();
   const minutes = now.getMinutes();
   const seconds = now.getSeconds();
-
-  if (timeFormat === "12") {
-    hours = ((hours + 11) % 12) + 1;
-  }
 
   const hourAngle = (hours % 12) * 30 + minutes * 0.5;
   const minuteAngle = minutes * 6;
