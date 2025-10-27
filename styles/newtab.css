@@ -200,14 +200,12 @@ body[data-wallpaper="flat-gray"] {
 .folder-item {
     flex-direction: row;
     align-items: flex-start;
-    gap: 0.5rem;
-    padding: 1.25rem;
+    gap: 0.25rem;
 }
 
 .folder-item i {
     color: #f39c12;
     font-size: 1rem;
-    margin-bottom: 0.25rem;
 }
 
 .folder-content {
