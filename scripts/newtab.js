@@ -1,4 +1,4 @@
-// Cache DOM elements
+
 const elements = {
   searchInput: null,
   searchBtn: null,
@@ -60,7 +60,6 @@ const config = {
   chunkSize: 1024 * 1024,
 };
 
-// some mid-engineer stuff :)
 const translations = {
   en: {
     searchPlaceholder: "Search the web...",
@@ -1016,7 +1015,6 @@ function extractBookmarks(bookmarkTreeNodes) {
         const childBookmarks = [];
         const childFolders = [];
         
-        // Extract bookmarks and folders from this folder
         function extractFromFolder(folderNode) {
           if (!folderNode.children) return;
           
@@ -1047,11 +1045,10 @@ function extractBookmarks(bookmarkTreeNodes) {
             type: "folder",
             bookmarkCount: childBookmarks.length,
             folderCount: childFolders.length,
-            children: childBookmarks // Store all bookmarks for the popup
+            children: childBookmarks
           });
         }
         
-        // Continue traversing for more bookmarks
         traverse(node.children, folderPath);
       } else if (node.children) {
         traverse(node.children, parentPath);
@@ -1088,13 +1085,11 @@ function displayBrowserBookmarks(data) {
     return;
   }
 
-  // Display folders first
   folders.forEach((folder) => {
     const folderElement = createFolderElement(folder);
     elements.bookmarksGrid.appendChild(folderElement);
   });
 
-  // Then display bookmarks
   bookmarks.forEach((bookmark) => {
     const bookmarkElement = createBookmarkElement(bookmark);
     elements.bookmarksGrid.appendChild(bookmarkElement);
@@ -1199,13 +1194,10 @@ function openFolderPopup(folder) {
     return;
   }
 
-  // Update the title
   folderTitle.textContent = `${folder.title} Bookmarks`;
 
-  // Clear existing bookmarks
   folderBookmarksGrid.innerHTML = "";
 
-  // Add bookmarks to the grid
   if (folder.children && folder.children.length > 0) {
     folder.children.forEach((bookmark) => {
       const bookmarkElement = createFolderBookmarkElement(bookmark);
@@ -1220,7 +1212,6 @@ function openFolderPopup(folder) {
     `;
   }
 
-  // Show the modal
   folderModal.style.display = "block";
 }
 

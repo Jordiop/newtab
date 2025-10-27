@@ -1,27 +1,48 @@
-# NewTab Pro - Beautiful Chrome Extension
+# Minimal New Tab - Beautiful Chrome Extension
 
-A modern and beautiful Chrome extension that transforms your new tab page into a productivity hub with stunning design and useful features.
+A modern and minimal Chrome extension that transforms your new tab page into a productivity hub with a beautiful analog clock, smart search, and bookmark management.
 
 ## ✨ Features
 
 ### 🎨 Beautiful Design
 - **Modern Glassmorphism UI**: Stunning glass-like effects with backdrop blur
-- **Gradient Backgrounds**: Beautiful purple-blue gradients
+- **Analog Clock**: Beautiful animated analog clock with hour, minute, and second hands
+- **Dynamic Color Matching**: Search elements automatically match your selected wallpaper color
 - **Smooth Animations**: Elegant hover effects and transitions
 - **Responsive Design**: Works perfectly on all screen sizes
-- **Dark/Light Theme Support**: Automatic theme detection
+- **High Contrast Support**: Enhanced accessibility for better visibility
 
 ### 🔍 Smart Search
-- **Google Search Integration**: Direct search from the new tab page
+- **Multiple Search Engines**: Choose from Google, Ecosia, or Brave Search
 - **Quick Search Bar**: Prominent search input with beautiful styling
 - **Keyboard Shortcuts**: Press Enter to search instantly
+- **Dynamic Colors**: Search button and icon match your wallpaper theme
 
 ### 📚 Bookmark Management
-- **Custom Bookmarks**: Add your own bookmarks with custom icons
-- **Quick Access**: One-click access to your favorite sites
-- **FontAwesome Icons**: Choose from thousands of icons
-- **Easy Management**: Add, edit, and delete bookmarks
+- **Browser Bookmarks Integration**: Automatically displays your Chrome bookmarks
+- **Folder Support**: View and access bookmarks organized in folders
+- **Folder Popup**: Click folders to see all bookmarks in a beautiful popup
+- **Favicon Support**: Shows website favicons for easy recognition
+- **One-Click Access**: Direct access to your favorite sites
 
+### 🎨 Customization
+- **6 Built-in Wallpapers**: Choose from flat color themes (Blue, Purple, Green, Orange, Red, Gray)
+- **Custom Wallpaper Upload**: Upload your own images (JPEG, PNG, GIF, WebP, SVG)
+- **URL Wallpaper**: Load wallpapers directly from image URLs
+- **Image Compression**: Automatic image optimization for better performance
+- **Wallpaper Preview**: See your custom wallpaper before applying
+
+### 🌍 Internationalization
+- **Multi-language Support**: English, Spanish, and Catalan
+- **Dynamic Language Switching**: Change language without reloading
+- **Localized Interface**: All UI elements are properly translated
+
+### ⚙️ Settings & Preferences
+- **Comprehensive Settings Panel**: Easy access to all customization options
+- **Persistent Storage**: All settings are saved and synced across devices
+- **Feature Toggle**: Enable/disable bookmarks section
+- **Search Engine Selection**: Choose your preferred search engine
+- **Language Selection**: Switch between supported languages
 
 ## 🚀 Installation
 
@@ -29,8 +50,8 @@ A modern and beautiful Chrome extension that transforms your new tab page into a
 
 1. **Download the Extension**
    ```bash
-   git clone https://github.com/yourusername/newtab-pro.git
-   cd newtab-pro
+   git clone https://github.com/yourusername/minimal-newtab.git
+   cd minimal-newtab
    ```
 
 2. **Open Chrome Extensions**
@@ -39,90 +60,90 @@ A modern and beautiful Chrome extension that transforms your new tab page into a
 
 3. **Load the Extension**
    - Click "Load unpacked"
-   - Select the `newtab-pro` folder
+   - Select the `minimal-newtab` folder
    - The extension will be installed and active
-
-### Method 2: Chrome Web Store (Coming Soon)
-
-1. Visit the Chrome Web Store
-2. Search for "NewTab Pro"
-3. Click "Add to Chrome"
-4. Confirm the installation
 
 ## 🎯 Usage
 
 ### New Tab Page
 - **Search**: Type in the search bar and press Enter or click the search button
-- **Bookmarks**: Click on the bookmarks icon to add your favorite sites
-- **Settings**: Click on the settings icon to change the extension settings
-- **Wallpaper**: Click on the wallpaper icon to change the background image
-- **Time**: The time is displayed in the top right corner
-- **Language**: The language is displayed in the top right corner
-- **Features**: The features are displayed in the top right corner
-- **Save Settings**: Click on the save settings button to save the settings
+- **Bookmarks**: Your Chrome bookmarks are automatically displayed
+- **Folders**: Click on folder icons to view bookmarks in a popup
+- **Settings**: Click the gear icon to access all customization options
+- **Clock**: Enjoy the beautiful animated analog clock
+
+### Settings Panel
+- **Wallpaper**: Choose from built-in themes or upload custom images
+- **Search Engine**: Select your preferred search engine
+- **Language**: Switch between English, Spanish, and Catalan
+- **Features**: Toggle bookmark visibility on/off
 
 ## 🔧 Configuration
 
-### Custom Quick Actions
-To add your own quick actions:
+### Custom Wallpapers
+1. Open the settings panel (gear icon)
+2. Go to "Appearance" section
+3. Choose "Upload Image" or "URL Image"
+4. Select your image or enter an image URL
+5. Click "Save Settings"
 
-1. Open `newtab.html`
-2. Find the `actions-grid` section
-3. Add new action cards following the existing pattern:
-   ```html
-   <div class="action-card" data-url="https://your-site.com">
-       <i class="fas fa-icon-name"></i>
-       <span>Your Site</span>
-   </div>
-   ```
+### Search Engine
+1. Open settings panel
+2. Go to "Search" section
+3. Select your preferred search engine
+4. Click "Save Settings"
 
-### Custom Icons
-Use any FontAwesome icon by changing the `class` attribute:
-- Browse icons at [FontAwesome](https://fontawesome.com/icons)
-- Use the format: `fas fa-icon-name` or `fab fa-icon-name`
+### Language
+1. Open settings panel
+2. Go to "Language" section
+3. Select your preferred language
+4. Click "Save Settings"
 
 ## 📁 File Structure
 
 ```
-newtab-pro/
+minimal-newtab/
 ├── manifest.json          # Extension configuration
 ├── newtab.html           # New tab page
-├── popup.html            # Extension popup
+├── test.html             # Development test page
 ├── styles/
-│   ├── newtab.css        # New tab page styles
-│   └── popup.css         # Popup styles
+│   ├── newtab.css        # Main styles with glassmorphism effects
+│   └── clock.css         # Analog clock animations
 ├── scripts/
-│   ├── newtab.js         # New tab page functionality
-│   └── popup.js          # Popup functionality
+│   └── newtab.js         # Main functionality and settings
 ├── icons/
-│   └── icon.svg          # Extension icon
+│   ├── icon16.png        # 16x16 extension icon
+│   ├── icon32.png        # 32x32 extension icon
+│   ├── icon48.png        # 48x48 extension icon
+│   ├── icon128.png       # 128x128 extension icon
+│   └── icon.svg          # Vector extension icon
 └── README.md             # This file
 ```
 
 ## 🎨 Customization
 
 ### Colors
-The extension uses a beautiful purple-blue gradient. To customize:
-
-1. Open `styles/newtab.css`
-2. Find the gradient definitions
-3. Modify the colors in the `linear-gradient` functions
+The extension uses dynamic color matching. Search elements automatically match your selected wallpaper:
+- **Flat Blue**: `#3498db`
+- **Flat Purple**: `#9b59b6`
+- **Flat Green**: `#2ecc71`
+- **Flat Orange**: `#e67e22`
+- **Flat Red**: `#e74c3c`
+- **Flat Gray**: `#34495e`
+- **Custom Images**: Falls back to flat gray
 
 ### Fonts
-The extension uses Inter font. To change:
-
-1. Update the Google Fonts link in HTML files
-2. Modify the `font-family` property in CSS files
+The extension uses Inter font family for a modern, clean look.
 
 ### Layout
-The layout is fully responsive and uses CSS Grid and Flexbox. Modify the grid layouts in the CSS files to adjust spacing and arrangement.
+The layout is fully responsive and uses CSS Grid and Flexbox for optimal organization.
 
 ## 🔒 Privacy
 
 - **No Data Collection**: The extension doesn't collect or send any personal data
-- **Local Storage**: All data is stored locally using Chrome's sync storage
-- **Location Permission**: Weather feature requires location access (optional)
+- **Local Storage**: All settings are stored locally using Chrome's sync storage
 - **No Tracking**: No analytics or tracking scripts
+- **Bookmark Access**: Only reads your bookmarks for display purposes
 
 ## 🛠️ Development
 
@@ -133,7 +154,7 @@ The layout is fully responsive and uses CSS Grid and Flexbox. Modify the grid la
 ### Making Changes
 1. Edit the files in your preferred code editor
 2. Go to `chrome://extensions/`
-3. Click the refresh icon on the NewTab Pro extension
+3. Click the refresh icon on the Minimal New Tab extension
 4. Open a new tab to see your changes
 
 ### Debugging
@@ -172,7 +193,6 @@ We welcome feature requests! Please:
 ## 📞 Support
 
 - **GitHub Issues**: For bugs and feature requests
-- **Email**: support@newtab-pro.com (coming soon)
 - **Documentation**: Check this README for common questions
 
 ## 🙏 Acknowledgments
@@ -180,30 +200,9 @@ We welcome feature requests! Please:
 - **FontAwesome**: For the beautiful icons
 - **Google Fonts**: For the Inter font family
 - **Chrome Extensions API**: For the powerful extension capabilities
-- **OpenWeatherMap**: For weather data (optional)
-
-## 📈 Roadmap
-
-### Version 1.1
-- [ ] Settings page with customization options
-- [ ] Multiple themes (dark, light, auto)
-- [ ] Custom background images
-- [ ] Keyboard shortcuts
-
-### Version 1.2
-- [ ] Widget system (clock, calendar, etc.)
-- [ ] Drag and drop bookmark organization
-- [ ] Search suggestions
-- [ ] Multiple search engines
-
-### Version 1.3
-- [ ] Productivity widgets (pomodoro timer, etc.)
-- [ ] Data sync with cloud services
-- [ ] Advanced customization options
-- [ ] Mobile companion app
 
 ---
 
 **Made with ❤️ for productivity enthusiasts**
 
-*Transform your new tab experience with NewTab Pro - where beauty meets productivity!* 
+*Transform your new tab experience with Minimal New Tab - where simplicity meets functionality!*

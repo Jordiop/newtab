@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "NewTab Pro",
-    "version": "1.1.0",
-    "description": "A beautiful and modern new tab page with productivity features and custom wallpapers",
+    "name": "Minimal new tab",
+    "version": "1.0.0",
+    "description": "Minimal new tab page with clock and search bar",
     "permissions": [
       "storage",
       "bookmarks",
@@ -19,7 +19,7 @@
       "128": "icons/icon128.png"
     },
     "action": {
-      "default_title": "NewTab Pro Settings",
+      "default_title": "Minimal new tab Settings",
       "default_popup": "popup.html"
     },
     "host_permissions": [
