@@ -8,6 +8,7 @@ const elements = {
   settingsModal: null,
   wallpaperSelect: null,
   defaultSearchEngineSelect: null,
+  clockTypeSelect: null,
   languageSelect: null,
   bookmarksEnabledCheckbox: null,
   saveSettingsBtn: null,
@@ -68,6 +69,8 @@ const translations = {
     appearance: "Appearance",
     search: "Search",
     defaultSearchEngine: "Default Search Engine",
+    clock: "Clock",
+    clockType: "Clock Type",
     features: "Features",
     wallpaper: "Wallpaper",
     customWallpaper: "Custom Wallpaper",
@@ -115,6 +118,8 @@ const translations = {
     appearance: "Apariencia",
     search: "Búsqueda",
     defaultSearchEngine: "Motor de búsqueda por defecto",
+    clock: "Reloj",
+    clockType: "Tipo de Reloj",
     features: "Características",
     wallpaper: "Fondo de pantalla",
     customWallpaper: "Fondo personalizado",
@@ -156,6 +161,8 @@ const translations = {
     appearance: "Aparença",
     search: "Cerca",
     defaultSearchEngine: "Motor de cerca per defecte",
+    clock: "Rellotge",
+    clockType: "Tipus de Rellotge",
     features: "Funcions",
     wallpaper: "Fons d'escriptori",
     customWallpaper: "Fons personalitzat",
@@ -195,6 +202,7 @@ const translations = {
 const defaultSettings = {
   wallpaper: "flat-gray",
   defaultSearchEngine: "google",
+  clockType: "analog",
   language: "en",
   bookmarksEnabled: true,
 };
@@ -230,7 +238,7 @@ function initializeElements() {
   elements.settingsModal = document.getElementById("settings-modal");
   elements.wallpaperSelect = document.getElementById("wallpaper-select");
   elements.defaultSearchEngineSelect = document.getElementById("default-search-engine");
-  elements.timeFormatSelect = document.getElementById("time-format");
+  elements.clockTypeSelect = document.getElementById("clock-type");
   elements.languageSelect = document.getElementById("language");
   elements.bookmarksEnabledCheckbox =
     document.getElementById("bookmarks-enabled");
@@ -534,6 +542,9 @@ function applySettings(settings) {
       ? "block"
       : "none";
   }
+
+  // Apply clock type
+  applyClockType(settings.clockType || "analog");
 }
 
 function applyCustomWallpaper(wallpaperData) {
@@ -561,6 +572,8 @@ function populateSettingsForm(settings) {
     elements.wallpaperSelect.value = settings.wallpaper || "flat-gray";
   if (elements.defaultSearchEngineSelect)
     elements.defaultSearchEngineSelect.value = settings.defaultSearchEngine || "google";
+  if (elements.clockTypeSelect)
+    elements.clockTypeSelect.value = settings.clockType || "analog";
   if (elements.languageSelect)
     elements.languageSelect.value = settings.language || "en";
   if (elements.bookmarksEnabledCheckbox)
@@ -611,6 +624,9 @@ function saveSettings() {
     defaultSearchEngine: elements.defaultSearchEngineSelect
       ? elements.defaultSearchEngineSelect.value
       : "google",
+    clockType: elements.clockTypeSelect
+      ? elements.clockTypeSelect.value
+      : "analog",
     language: elements.languageSelect ? elements.languageSelect.value : "en",
     bookmarksEnabled: elements.bookmarksEnabledCheckbox
       ? elements.bookmarksEnabledCheckbox.checked
@@ -794,6 +810,13 @@ function setupEventListeners() {
       switchWallpaperTab(this.dataset.tab);
     });
   });
+
+  if (elements.clockTypeSelect) {
+    elements.clockTypeSelect.addEventListener("change", function () {
+      const clockType = this.value;
+      applyClockType(clockType);
+    });
+  }
 
   if (elements.languageSelect) {
     elements.languageSelect.addEventListener("change", function () {
@@ -1285,7 +1308,30 @@ function showNotification(message, type = "info") {
   }, 3000);
 }
 
+function applyClockType(clockType) {
+  const analogClock = document.getElementById("analog-clock");
+  const digitalClock = document.getElementById("digital-clock");
+
+  if (clockType === "digital") {
+    if (analogClock) analogClock.style.display = "none";
+    if (digitalClock) digitalClock.style.display = "block";
+  } else {
+    if (analogClock) analogClock.style.display = "block";
+    if (digitalClock) digitalClock.style.display = "none";
+  }
+}
+
 function updateClock() {
+  const clockType = currentSettings.clockType || "analog";
+  
+  if (clockType === "digital") {
+    updateDigitalClock();
+  } else {
+    updateAnalogClock();
+  }
+}
+
+function updateAnalogClock() {
   const now = new Date();
   const hours = now.getHours();
   const minutes = now.getMinutes();
@@ -1302,6 +1348,32 @@ function updateClock() {
   if (hourHand) hourHand.style.transform = `rotate(${hourAngle}deg)`;
   if (minuteHand) minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
   if (secondHand) secondHand.style.transform = `rotate(${secondAngle}deg)`;
+}
+
+function updateDigitalClock() {
+  const now = new Date();
+  const timeElement = document.getElementById("digital-time");
+  const dateElement = document.getElementById("digital-date");
+
+  if (timeElement) {
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+
+  if (dateElement) {
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    const dateString = now.toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 
+                                            currentLanguage === 'es' ? 'es-ES' : 
+                                            currentLanguage === 'ca' ? 'ca-ES' : 'en-US', options);
+    dateElement.textContent = dateString;
+  }
 }
 
 function startClock() {
