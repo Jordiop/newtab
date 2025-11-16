@@ -986,9 +986,14 @@ function performSearch() {
     const searchEngineConfig = searchEngines[searchEngine];
     if (searchEngineConfig) {
       const searchUrl = searchEngineConfig.url + encodeURIComponent(query);
-      window.open(searchUrl, "_blank");
+      // use the same page, not a new tab
+      window.location.href = searchUrl; 
+      // TODO: Let user choose to open a new tab or not
       if (elements.searchInput) elements.searchInput.value = "";
     }
+  } else {
+    // use the same page, not a new tab
+    window.location.href = "https://www.google.com/";
   }
 }
 
