@@ -253,6 +253,8 @@ function initializeElements() {
   elements.wallpaperUrlInput = document.getElementById("wallpaper-url-input");
   elements.urlWallpaperBtn = document.getElementById("url-wallpaper-btn");
   elements.wallpaperTabs = document.querySelectorAll(".wallpaper-tab");
+  elements.settingsNavItems = document.querySelectorAll(".nav-item");
+  elements.settingsSections = document.querySelectorAll(".settings-section");
 }
 
 function getCurrentTranslations() {
@@ -795,6 +797,15 @@ function setupEventListeners() {
 
   if (elements.urlWallpaperBtn) {
     elements.urlWallpaperBtn.addEventListener("click", handleUrlWallpaper);
+  }
+
+  if (elements.settingsNavItems) {
+    elements.settingsNavItems.forEach(item => {
+      item.addEventListener("click", () => {
+        const sectionId = item.dataset.section;
+        switchSettingsSection(sectionId);
+      });
+    });
   }
 
   if (elements.wallpaperUrlInput) {
@@ -1411,3 +1422,337 @@ window.NewTabPro = {
   switchWallpaperTab: switchWallpaperTab,
   loadUrlWallpaper: handleUrlWallpaper,
 };
+
+function switchSettingsSection(sectionId) {
+  // Update nav items
+  elements.settingsNavItems.forEach(item => {
+    if (item.dataset.section === sectionId) {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  // Update sections
+  elements.settingsSections.forEach(section => {
+    if (section.id === `section-${sectionId}`) {
+      section.classList.add("active");
+    } else {
+      section.classList.remove("active");
+    }
+  });
+}
+
+function openSettingsModal() {
+  if (elements.settingsModal) {
+    elements.settingsModal.style.display = "block";
+    // Reset to first tab when opening
+    switchSettingsSection("appearance");
+  }
+}
+
+function closeSettingsModal() {
+  if (elements.settingsModal) {
+    elements.settingsModal.style.display = "none";
+  }
+}
+
+function closeFolderPopup() {
+  const folderModal = document.getElementById("folder-popup-modal");
+  if (folderModal) {
+    folderModal.style.display = "none";
+  }
+}
+
+function performSearch() {
+  const query = elements.searchInput.value.trim();
+  if (query) {
+    const engine = currentSettings.defaultSearchEngine || "google";
+    const searchUrl = searchEngines[engine].url + encodeURIComponent(query);
+    window.location.href = searchUrl;
+  }
+}
+
+function handleCustomWallpaperUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!config.supportedImageTypes.includes(file.type)) {
+    showNotification(
+      getCurrentTranslations().invalidImageType || "Invalid image type",
+      "error"
+    );
+    return;
+  }
+
+  if (file.size > config.maxUploadSize) {
+    showNotification(
+      getCurrentTranslations().imageTooLarge || "Image too large",
+      "error"
+    );
+    return;
+  }
+
+  // Show loading state
+  const btn = document.getElementById("choose-wallpaper-btn");
+  if (btn) {
+    btn.classList.add("processing");
+    btn.disabled = true;
+  }
+
+  compressImageAdvanced(file)
+    .then((result) => {
+      if (result) {
+        customWallpaperData = {
+          type: "upload",
+          data: result.dataUrl,
+          compressed: result.compressed,
+          originalSize: file.size,
+        };
+        updateCustomWallpaperPreview(result.dataUrl);
+        showNotification(
+          getCurrentTranslations().customWallpaperLoaded ||
+            "Custom wallpaper loaded",
+          "success"
+        );
+      }
+    })
+    .catch((error) => {
+      console.error("Error processing image:", error);
+      showNotification(
+        getCurrentTranslations().imageReadError || "Error reading image",
+        "error"
+      );
+    })
+    .finally(() => {
+      if (btn) {
+        btn.classList.remove("processing");
+        btn.disabled = false;
+      }
+      // Reset input
+      e.target.value = "";
+    });
+}
+
+function removeCustomWallpaper() {
+  customWallpaperData = {
+    type: null,
+    data: null,
+    compressed: false,
+    originalSize: null,
+  };
+  updateCustomWallpaperPreview(null);
+  showNotification(
+    getCurrentTranslations().customWallpaperRemoved ||
+      "Custom wallpaper removed",
+    "info"
+  );
+}
+
+async function handleUrlWallpaper() {
+  const urlInput = document.getElementById("wallpaper-url-input");
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    showNotification(
+      getCurrentTranslations().invalidUrl || "Invalid URL",
+      "error"
+    );
+    return;
+  }
+
+  const btn = document.getElementById("url-wallpaper-btn");
+  if (btn) {
+    btn.classList.add("processing");
+    btn.disabled = true;
+  }
+
+  try {
+    const result = await loadImageFromUrl(url);
+    customWallpaperData = result;
+    updateCustomWallpaperPreview(url);
+    showNotification(
+      getCurrentTranslations().urlLoadSuccess || "Image loaded successfully",
+      "success"
+    );
+  } catch (error) {
+    console.error("Error loading URL:", error);
+    showNotification(
+      getCurrentTranslations().urlLoadError || "Error loading image",
+      "error"
+    );
+  } finally {
+    if (btn) {
+      btn.classList.remove("processing");
+      btn.disabled = false;
+    }
+  }
+}
+
+function showNotification(message, type = "info") {
+  const notification = document.createElement("div");
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  
+  document.body.appendChild(notification);
+  
+  // Trigger reflow
+  notification.offsetHeight;
+  
+  notification.classList.add("show");
+  
+  setTimeout(() => {
+    notification.classList.remove("show");
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, 3000);
+}
+
+function startClock() {
+  updateClock();
+  setInterval(updateClock, config.clockUpdateInterval);
+}
+
+function updateClock() {
+  const now = new Date();
+  
+  // Analog Clock
+  const analogClock = document.getElementById("analog-clock");
+  if (analogClock && analogClock.style.display !== "none") {
+    const second = now.getSeconds();
+    const minute = now.getMinutes();
+    const hour = now.getHours();
+    
+    const secondDeg = (second / 60) * 360;
+    const minuteDeg = ((minute + second / 60) / 60) * 360;
+    const hourDeg = ((hour + minute / 60) / 12) * 360;
+    
+    const secondHand = document.querySelector(".second");
+    const minuteHand = document.querySelector(".minute");
+    const hourHand = document.querySelector(".hour");
+    
+    if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
+    if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+    if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+  }
+  
+  // Digital Clock
+  const digitalClock = document.getElementById("digital-clock");
+  if (digitalClock && digitalClock.style.display !== "none") {
+    const timeElement = document.getElementById("digital-time");
+    const dateElement = document.getElementById("digital-date");
+    
+    if (timeElement) {
+      timeElement.textContent = now.toLocaleTimeString(currentLanguage, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+    }
+    
+    if (dateElement) {
+      dateElement.textContent = now.toLocaleDateString(currentLanguage, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+  }
+}
+
+function applyClockType(type) {
+  const analogClock = document.getElementById("analog-clock");
+  const digitalClock = document.getElementById("digital-clock");
+  
+  if (type === "analog") {
+    if (analogClock) analogClock.style.display = "flex";
+    if (digitalClock) digitalClock.style.display = "none";
+  } else {
+    if (analogClock) analogClock.style.display = "none";
+    if (digitalClock) digitalClock.style.display = "flex";
+  }
+}
+
+function loadBrowserBookmarks() {
+  if (typeof chrome !== "undefined" && chrome.bookmarks) {
+    chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
+      const bookmarksGrid = document.getElementById("bookmarks-grid");
+      if (!bookmarksGrid) return;
+      
+      bookmarksGrid.innerHTML = "";
+      
+      // Flatten the tree to get top level bookmarks bar items
+      const bookmarksBar = bookmarkTreeNodes[0].children[0];
+      
+      if (bookmarksBar && bookmarksBar.children) {
+        bookmarksBar.children.forEach(node => {
+          const item = createBookmarkElement(node);
+          bookmarksGrid.appendChild(item);
+        });
+      }
+    });
+  }
+}
+
+function createBookmarkElement(node) {
+  const div = document.createElement("div");
+  
+  if (node.url) {
+    // It's a bookmark
+    div.className = "bookmark-item";
+    div.innerHTML = `
+      <img src="https://www.google.com/s2/favicons?domain=${new URL(node.url).hostname}" alt="">
+      <span>${node.title}</span>
+    `;
+    div.addEventListener("click", () => {
+      window.location.href = node.url;
+    });
+  } else {
+    // It's a folder
+    div.className = "bookmark-item folder-item";
+    div.innerHTML = `
+      <i class="fas fa-folder"></i>
+      <div class="folder-content">
+        <div class="folder-title">${node.title}</div>
+        <div class="folder-stats"><small>${node.children ? node.children.length : 0} items</small></div>
+      </div>
+    `;
+    div.addEventListener("click", () => {
+      openFolderPopup(node);
+    });
+  }
+  
+  return div;
+}
+
+function openFolderPopup(folderNode) {
+  const modal = document.getElementById("folder-popup-modal");
+  const grid = document.getElementById("folder-bookmarks-grid");
+  const title = document.querySelector(".folder-popup-title");
+  
+  if (modal && grid && title) {
+    title.textContent = folderNode.title;
+    grid.innerHTML = "";
+    
+    if (folderNode.children) {
+      folderNode.children.forEach(child => {
+        if (child.url) {
+          const item = document.createElement("div");
+          item.className = "folder-bookmark-item";
+          item.innerHTML = `
+            <img src="https://www.google.com/s2/favicons?domain=${new URL(child.url).hostname}" alt="">
+            <span>${child.title}</span>
+          `;
+          item.addEventListener("click", () => {
+            window.location.href = child.url;
+          });
+          grid.appendChild(item);
+        }
+      });
+    }
+    
+    modal.style.display = "block";
+  }
+}

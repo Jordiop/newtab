@@ -59,118 +59,153 @@
     </div>
 
     <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3 data-i18n="settings">Settings</h3>
-            
-            <div class="settings-section">
-                <h4 data-i18n="appearance">Appearance</h4>
-                <div class="form-group">
-                    <label for="wallpaper-select" data-i18n="wallpaper">Wallpaper</label>
-                    <select id="wallpaper-select">
-                        <option value="flat-blue">Flat Blue</option>
-                        <option value="flat-purple">Flat Purple</option>
-                        <option value="flat-green">Flat Green</option>
-                        <option value="flat-orange">Flat Orange</option>
-                        <option value="flat-red">Flat Red</option>
-                        <option value="flat-gray">Flat Gray</option>
-                    </select>
+        <div class="modal-content settings-modal-enhanced">
+            <div class="settings-header">
+                <h3 data-i18n="settings">Settings</h3>
+                <span class="close">&times;</span>
+            </div>
+
+            <div class="settings-section collapsible">
+                <div class="section-header" data-section="appearance">
+                    <i class="fas fa-palette section-icon"></i>
+                    <h4 data-i18n="appearance">Appearance</h4>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
-                
-                <div class="form-group">
-                    <label for="custom-wallpaper-input" data-i18n="customWallpaper">Custom Wallpaper</label>
-                    
-                    <div class="wallpaper-tabs">
-                        <button type="button" class="wallpaper-tab active" data-tab="upload" data-i18n="uploadImage">Upload Image</button>
-                        <button type="button" class="wallpaper-tab" data-tab="url" data-i18n="urlImage">URL Image</button>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="wallpaper-select" data-i18n="wallpaper">Wallpaper</label>
+                        <select id="wallpaper-select">
+                            <option value="flat-blue">Flat Blue</option>
+                            <option value="flat-purple">Flat Purple</option>
+                            <option value="flat-green">Flat Green</option>
+                            <option value="flat-orange">Flat Orange</option>
+                            <option value="flat-red">Flat Red</option>
+                            <option value="flat-gray">Flat Gray</option>
+                        </select>
                     </div>
-                    
-                    <div id="upload-wallpaper-content" class="wallpaper-content">
-                        <div class="custom-wallpaper-container">
-                            <input type="file" id="custom-wallpaper-input" accept="image/*" style="display: none;">
-                            <button type="button" class="file-btn" id="choose-wallpaper-btn">
-                                <i class="fas fa-upload"></i>
-                                <span data-i18n="chooseImage">Choose Image</span>
-                            </button>
-                            <div class="upload-info">
-                                <small>Supports: JPEG, PNG, GIF, WebP, SVG • Max: 50MB</small>
-                            </div>
+
+                    <div class="form-group">
+                        <label for="custom-wallpaper-input" data-i18n="customWallpaper">Custom Wallpaper</label>
+
+                        <div class="wallpaper-tabs">
+                            <button type="button" class="wallpaper-tab active" data-tab="upload" data-i18n="uploadImage">Upload Image</button>
+                            <button type="button" class="wallpaper-tab" data-tab="url" data-i18n="urlImage">URL Image</button>
                         </div>
-                    </div>
-                    
-                    <div id="url-wallpaper-content" class="wallpaper-content" style="display: none;">
-                        <div class="url-wallpaper-container">
-                            <div class="url-input-group">
-                                <input type="url" id="wallpaper-url-input" data-i18n="enterImageUrl" placeholder="Enter image URL...">
-                                <button type="button" class="url-btn" id="url-wallpaper-btn">
-                                    <i class="fas fa-download"></i>
-                                    <span data-i18n="loadFromUrl">Load from URL</span>
+
+                        <div id="upload-wallpaper-content" class="wallpaper-content">
+                            <div class="custom-wallpaper-container">
+                                <input type="file" id="custom-wallpaper-input" accept="image/*" style="display: none;">
+                                <button type="button" class="file-btn" id="choose-wallpaper-btn">
+                                    <i class="fas fa-upload"></i>
+                                    <span data-i18n="chooseImage">Choose Image</span>
                                 </button>
-                            </div>
-                            <div class="url-info">
-                                <small>Examples: Unsplash, Pexels, or any direct image URL</small>
+                                <div class="upload-info">
+                                    <small>Supports: JPEG, PNG, GIF, WebP, SVG • Max: 50MB</small>
+                                </div>
                             </div>
                         </div>
+
+                        <div id="url-wallpaper-content" class="wallpaper-content" style="display: none;">
+                            <div class="url-wallpaper-container">
+                                <div class="url-input-group">
+                                    <input type="url" id="wallpaper-url-input" data-i18n="enterImageUrl" placeholder="Enter image URL...">
+                                    <button type="button" class="url-btn" id="url-wallpaper-btn">
+                                        <i class="fas fa-download"></i>
+                                        <span data-i18n="loadFromUrl">Load from URL</span>
+                                    </button>
+                                </div>
+                                <div class="url-info">
+                                    <small>Examples: Unsplash, Pexels, or any direct image URL</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="custom-wallpaper-preview" class="wallpaper-preview"></div>
+                        <button type="button" class="remove-btn" style="display: none;" id="remove-wallpaper-btn">
+                            <i class="fas fa-trash"></i>
+                            <span data-i18n="removeCustomWallpaper">Remove Custom Wallpaper</span>
+                        </button>
                     </div>
-                    
-                    <div id="custom-wallpaper-preview" class="wallpaper-preview"></div>
-                    <button type="button" class="remove-btn" style="display: none;" id="remove-wallpaper-btn">
-                        <i class="fas fa-trash"></i>
-                        <span data-i18n="removeCustomWallpaper">Remove Custom Wallpaper</span>
-                    </button>
                 </div>
             </div>
 
-            <div class="settings-section">
-                <h4 data-i18n="search">Search</h4>
-                <div class="form-group">
-                    <label for="default-search-engine" data-i18n="defaultSearchEngine">Default Search Engine</label>
-                    <select id="default-search-engine">
-                        <option value="google">Google</option>
-                        <option value="ecosia">Ecosia</option>
-                        <option value="brave">Brave</option>
-                    </select>
+            <div class="settings-section collapsible">
+                <div class="section-header" data-section="search">
+                    <i class="fas fa-search section-icon"></i>
+                    <h4 data-i18n="search">Search</h4>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="default-search-engine" data-i18n="defaultSearchEngine">Default Search Engine</label>
+                        <select id="default-search-engine">
+                            <option value="google">Google</option>
+                            <option value="ecosia">Ecosia</option>
+                            <option value="brave">Brave</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="settings-section">
-                <h4 data-i18n="clock">Clock</h4>
-                <div class="form-group">
-                    <label for="clock-type" data-i18n="clockType">Clock Type</label>
-                    <select id="clock-type">
-                        <option value="analog">Analog Clock</option>
-                        <option value="digital">Digital Clock</option>
-                    </select>
+            <div class="settings-section collapsible">
+                <div class="section-header" data-section="clock">
+                    <i class="fas fa-clock section-icon"></i>
+                    <h4 data-i18n="clock">Clock</h4>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="clock-type" data-i18n="clockType">Clock Type</label>
+                        <select id="clock-type">
+                            <option value="analog">Analog Clock</option>
+                            <option value="digital">Digital Clock</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="settings-section">
-                <h4 data-i18n="language">Language</h4>
-                <div class="form-group">
-                    <label for="language" data-i18n="language">Language</label>
-                    <select id="language">
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
-                        <option value="ca">Català</option>
-                    </select>
+            <div class="settings-section collapsible">
+                <div class="section-header" data-section="language">
+                    <i class="fas fa-language section-icon"></i>
+                    <h4 data-i18n="language">Language</h4>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="language" data-i18n="language">Language</label>
+                        <select id="language">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="ca">Català</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="settings-section">
-                <h4 data-i18n="features">Features</h4>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="bookmarks-enabled">
-                        <span class="checkmark"></span>
-                        <span data-i18n="bookmarksEnabled">Show bookmarks</span>
-                    </label>
+            <div class="settings-section collapsible">
+                <div class="section-header" data-section="features">
+                    <i class="fas fa-sliders-h section-icon"></i>
+                    <h4 data-i18n="features">Features</h4>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="bookmarks-enabled">
+                            <span class="checkmark"></span>
+                            <span data-i18n="bookmarksEnabled">Show bookmarks</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
-            <button type="button" class="submit-btn" id="save-settings" data-i18n="saveSettings">Save Settings</button>
+            <div class="settings-actions">
+                <button type="button" class="reset-btn" id="reset-settings-btn" data-i18n="resetToDefaults">Reset to Defaults</button>
+                <button type="button" class="submit-btn" id="save-settings" data-i18n="saveSettings">Save Settings</button>
+            </div>
         </div>
     </div>
 
-    <script src="scripts/newtab.js"></script>
+    <script type="module" src="scripts/main.js"></script>
 </body>
 </html>
