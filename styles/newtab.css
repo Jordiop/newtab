@@ -404,7 +404,7 @@ body:not([data-wallpaper]) .search-btn:hover {
     max-width: 800px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    height: 70vh;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1141,20 +1141,33 @@ body:not([data-wallpaper]) .search-btn:hover {
     }
     
     .modal-content {
-        padding: 1.5rem;
-        margin: 1rem;
-        width: calc(100% - 2rem);
+        padding: 0;
+        margin: 0.5rem;
+        width: calc(100% - 1rem);
+        max-height: 98vh;
     }
-    
+
+    .settings-header {
+        padding: 1rem 1rem 0.75rem;
+    }
+
+    .settings-sections-container {
+        padding: 0.75rem 1rem;
+    }
+
+    .settings-actions {
+        padding: 0.75rem 1rem 1rem;
+    }
+
     .wallpaper-preview {
         height: 60px;
     }
-    
+
     .file-btn, .url-btn, .remove-btn {
         padding: 0.6rem 0.8rem;
         font-size: 0.85rem;
     }
-    
+
     .upload-info small, .url-info small {
         font-size: 0.75rem;
     }
@@ -1228,17 +1241,19 @@ body:not([data-wallpaper]) .search-btn:hover {
 /* Enhanced Settings Modal with Collapsible Sections */
 .settings-modal-enhanced {
     max-width: 600px;
-    overflow-y: auto;
-    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow: hidden;
 }
 
 .settings-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    padding: 2rem 2rem 1rem;
     border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
 }
 
 .settings-header h3 {
@@ -1248,6 +1263,31 @@ body:not([data-wallpaper]) .search-btn:hover {
 .settings-header .close {
     margin: 0;
     float: none;
+}
+
+.settings-sections-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 2rem;
+    min-height: 0;
+}
+
+.settings-sections-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-sections-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.settings-sections-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.settings-sections-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .settings-section.collapsible {
@@ -1333,9 +1373,10 @@ body:not([data-wallpaper]) .search-btn:hover {
 .settings-actions {
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    padding: 1.5rem 2rem 2rem;
     border-top: 2px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.95);
 }
 
 .settings-actions .submit-btn {
@@ -1362,14 +1403,27 @@ body:not([data-wallpaper]) .search-btn:hover {
 }
 
 @media (max-width: 768px) {
+    .settings-modal-enhanced {
+        max-height: 95vh;
+    }
+
+    .settings-header {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+
+    .settings-sections-container {
+        padding: 1rem 1.5rem;
+    }
+
     .settings-actions {
         flex-direction: column;
+        padding: 1rem 1.5rem 1.5rem;
     }
-    
+
     .section-header {
         padding: 0.875rem 1rem;
     }
-    
+
     .section-content {
         padding: 1rem;
     }
