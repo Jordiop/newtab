@@ -5,7 +5,6 @@ export const elements = {
   bookmarksGrid: null,
   settingsBtn: null,
   settingsModal: null,
-  wallpaperSelect: null,
   defaultSearchEngineSelect: null,
   clockTypeSelect: null,
   languageSelect: null,
@@ -18,6 +17,9 @@ export const elements = {
   urlWallpaperBtn: null,
   wallpaperTabs: null,
   resetSettingsBtn: null,
+  calendarWidget: null,
+  todoWidget: null,
+  editLayoutBtn: null,
 };
 
 export function initializeElements() {
@@ -26,7 +28,6 @@ export function initializeElements() {
   elements.bookmarksGrid = document.getElementById("bookmarks-grid");
   elements.settingsBtn = document.getElementById("settings-btn");
   elements.settingsModal = document.getElementById("settings-modal");
-  elements.wallpaperSelect = document.getElementById("wallpaper-select");
   elements.defaultSearchEngineSelect = document.getElementById("default-search-engine");
   elements.clockTypeSelect = document.getElementById("clock-type");
   elements.languageSelect = document.getElementById("language");
@@ -39,4 +40,7 @@ export function initializeElements() {
   elements.urlWallpaperBtn = document.getElementById("url-wallpaper-btn");
   elements.wallpaperTabs = document.querySelectorAll(".wallpaper-tab");
   elements.resetSettingsBtn = document.getElementById("reset-settings-btn");
+  elements.calendarWidget = document.getElementById("calendar-widget");
+  elements.todoWidget = document.getElementById("todo-widget");
+  elements.editLayoutBtn = document.getElementById("edit-layout-btn");
 }

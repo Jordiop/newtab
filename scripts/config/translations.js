@@ -50,6 +50,13 @@ export const translations = {
     fallbackStorage: "Image too large, using optimized storage method",
     resetToDefaults: "Reset to Defaults",
     confirmReset: "Are you sure you want to reset all settings to defaults?",
+    // Calendar
+    calendarMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    calendarDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    // Todo
+    todoTitle: "To-Do",
+    todoPlaceholder: "Add a task...",
+    todoEmpty: "No tasks yet",
   },
   es: {
     searchPlaceholder: "Buscar en la web...",
@@ -95,6 +102,13 @@ export const translations = {
       "Imagen demasiado grande, usando método de almacenamiento optimizado",
     resetToDefaults: "Restablecer Valores",
     confirmReset: "¿Estás seguro de que quieres restablecer toda la configuración?",
+    // Calendar
+    calendarMonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    calendarDays: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    // Todo
+    todoTitle: "Tareas",
+    todoPlaceholder: "Añadir tarea...",
+    todoEmpty: "No hay tareas",
   },
   ca: {
     searchPlaceholder: "Cerca en la web...",
@@ -140,5 +154,12 @@ export const translations = {
       "Imatge massa gran, utilitzant mètode d'emmagatzematge optimitzat",
     resetToDefaults: "Restablir Valors",
     confirmReset: "Estàs segur que vols restablir tota la configuració?",
+    // Calendar
+    calendarMonths: ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"],
+    calendarDays: ["Dll", "Dmt", "Dmc", "Dij", "Div", "Dis", "Diu"],
+    // Todo
+    todoTitle: "Tasques",
+    todoPlaceholder: "Afegir tasca...",
+    todoEmpty: "No hi ha tasques",
   },
 };

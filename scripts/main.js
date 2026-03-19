@@ -12,6 +12,9 @@ import {
   removeCustomWallpaper,
   updateCustomWallpaperPreview
 } from './modules/wallpaper.js';
+import { renderCalendar, refreshCalendarTranslations } from './modules/calendar.js';
+import { initTodo, refreshTodoTranslations } from './modules/todo.js';
+import { initGrid } from './modules/grid.js';
 
 // Initialize application
 document.addEventListener("DOMContentLoaded", function () {
@@ -23,6 +26,9 @@ document.addEventListener("DOMContentLoaded", function () {
     startClock();
     loadBrowserBookmarks();
     setTranslations();
+    if (elements.calendarWidget) renderCalendar(elements.calendarWidget);
+    if (elements.todoWidget) initTodo(elements.todoWidget);
+    initGrid();
   } catch (error) {
     console.error("Error initializing NewTab Pro:", error);
   }
@@ -132,6 +138,8 @@ function setupEventListeners() {
     elements.languageSelect.addEventListener("change", function () {
       setCurrentLanguage(this.value);
       setTranslations();
+      refreshCalendarTranslations();
+      refreshTodoTranslations();
     });
   }
 }

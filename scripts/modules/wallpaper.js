@@ -2,7 +2,6 @@
 import { config } from '../config/constants.js';
 import { elements } from './elements.js';
 import { getCurrentTranslations, showNotification } from './ui.js';
-import { currentSettings } from './settings.js';
 
 export let customWallpaperData = {
   type: null,
@@ -79,10 +78,6 @@ export function applyCustomWallpaper(wallpaperData) {
     document.body.removeAttribute("data-wallpaper");
   } else {
     document.body.style.backgroundImage = "";
-    document.body.setAttribute(
-      "data-wallpaper",
-      currentSettings.wallpaper || "flat-gray"
-    );
   }
 }
 

@@ -1,136 +1,111 @@
 .clock-container {
-display: flex;
-align-items: center;
-justify-content: center;
-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    container-type: size;
 }
 
 
 .clock {
-border-radius: 100%;
-background: #ffffff;
-font-family: "Montserrat";
-border: 5px solid white;
-box-shadow: inset 2px 3px 8px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 100%;
+    background: #141414;
+    font-family: "Montserrat";
+    border: 1px solid #1e1e1e;
 }
 
 .squared-clock {
-border-radius: 5px;
-backdrop-filter: blur(20px);
-background: rgba(255, 255, 255, 0.2);
-font-family: "Montserrat";
-padding: 10px;
-border: 5px solid white;
-box-shadow: inset 2px 3px 8px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: #141414;
+    font-family: "Montserrat";
+    padding: 10px;
+    border: 1px solid #1e1e1e;
 }
 
 .wrap {
-overflow: hidden;
-position: relative;
-width: 350px;
-height: 350px;
-border-radius: 100%;
+    overflow: hidden;
+    position: relative;
+    width: min(350px, 80cqi, 80cqb);
+    aspect-ratio: 1;
+    border-radius: 100%;
 }
 
 .minute,
 .hour {
-position: absolute;
-height: 100px;
-width: 6px;
-margin: auto;
-top: -27%;
-left: 0;
-bottom: 0;
-right: 0;
-background: black;
-transform-origin: bottom center;
-transform: rotate(0deg);
-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
-z-index: 1;
+    position: absolute;
+    height: 28.5%;
+    width: 6px;
+    margin: auto;
+    top: -27%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #fff;
+    transform-origin: bottom center;
+    transform: rotate(0deg);
+    z-index: 1;
 }
 
 .minute {
-position: absolute;
-height: 130px;
-width: 4px;
-top: -38%;
-left: 0;
-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
-transform: rotate(90deg);
+    position: absolute;
+    height: 37%;
+    width: 4px;
+    top: -38%;
+    left: 0;
+    transform: rotate(90deg);
 }
 
 .second {
-position: absolute;
-height: 90px;
-width: 2px;
-margin: auto;
-top: -26%;
-left: 0;
-bottom: 0;
-right: 0;
-border-radius: 4px;
-background: #FF4B3E;
-transform-origin: bottom center;
-transform: rotate(180deg);
-z-index: 1;
+    position: absolute;
+    height: 25.7%;
+    width: 2px;
+    margin: auto;
+    top: -26%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: 4px;
+    background: #555;
+    transform-origin: bottom center;
+    transform: rotate(180deg);
+    z-index: 1;
 }
 
 .dot {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-width: 12px;
-height: 12px;
-border-radius: 100px;
-background: white;
-border: 2px solid #1b1b1b;
-margin: auto;
-z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 100px;
+    background: #fff;
+    border: 2px solid #333;
+    margin: auto;
+    z-index: 1;
 }
 
 /* Digital Clock Styles */
 .digital-clock {
-text-align: center;
-color: white;
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
+    color: white;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .digital-time {
-font-size: 4rem;
-font-weight: 300;
-letter-spacing: 0.1em;
-text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-margin-bottom: 0.5rem;
-line-height: 1;
+    font-size: clamp(1.5rem, 8cqi, 4rem);
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0.5rem;
+    line-height: 1;
 }
 
 .digital-date {
-font-size: 1.2rem;
-font-weight: 400;
-opacity: 0.8;
-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-letter-spacing: 0.05em;
-}
-
-/* Responsive Digital Clock */
-@media (max-width: 768px) {
-.digital-time {
-    font-size: 3rem;
-}
-
-.digital-date {
-    font-size: 1rem;
-}
-}
-
-@media (max-width: 480px) {
-.digital-time {
-    font-size: 2.5rem;
-}
-
-.digital-date {
-    font-size: 0.9rem;
-}
+    font-size: clamp(0.7rem, 2.5cqi, 1.2rem);
+    font-weight: 400;
+    opacity: 0.8;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.05em;
 }

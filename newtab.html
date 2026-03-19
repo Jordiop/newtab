@@ -10,12 +10,15 @@
     <link rel="stylesheet" href="styles/clock.css">
 </head>
 <body>
-    <div class="container">
-        <div class="settings-btn" id="settings-btn">
-            <i class="fas fa-cog"></i>
-        </div>
+    <div class="settings-btn" id="settings-btn">
+        <i class="fas fa-cog"></i>
+    </div>
+    <div class="edit-layout-btn" id="edit-layout-btn">
+        <i class="fas fa-th"></i>
+    </div>
 
-        <div class="clock-container">
+    <div class="container">
+        <div class="clock-container grid-widget" data-widget-id="clock">
             <div class="clock analog-clock" id="analog-clock">
                 <div class="wrap">
                     <span class="hour"></span>
@@ -30,7 +33,7 @@
             </div>
         </div>
 
-        <section class="search-section">
+        <section class="search-section grid-widget" data-widget-id="search">
             <div class="search-container">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
@@ -42,7 +45,10 @@
             </div>
         </section>
 
-        <section class="bookmarks-section">
+        <div class="calendar-widget grid-widget" id="calendar-widget" data-widget-id="calendar"></div>
+        <div class="todo-widget grid-widget" id="todo-widget" data-widget-id="todo"></div>
+
+        <section class="bookmarks-section grid-widget" data-widget-id="bookmarks">
             <h2 data-i18n="bookmarks">Bookmarks</h2>
             <div class="bookmarks-grid" id="bookmarks-grid">
             </div>
@@ -73,18 +79,6 @@
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>
                 <div class="section-content">
-                    <div class="form-group">
-                        <label for="wallpaper-select" data-i18n="wallpaper">Wallpaper</label>
-                        <select id="wallpaper-select">
-                            <option value="flat-blue">Flat Blue</option>
-                            <option value="flat-purple">Flat Purple</option>
-                            <option value="flat-green">Flat Green</option>
-                            <option value="flat-orange">Flat Orange</option>
-                            <option value="flat-red">Flat Red</option>
-                            <option value="flat-gray">Flat Gray</option>
-                        </select>
-                    </div>
-
                     <div class="form-group">
                         <label for="custom-wallpaper-input" data-i18n="customWallpaper">Custom Wallpaper</label>
 

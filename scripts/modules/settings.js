@@ -35,16 +35,12 @@ function handleSettingsLoad(settings) {
 export function applySettings(settings) {
   if (!customWallpaperData.data) {
     document.body.style.backgroundImage = "";
-    document.body.setAttribute(
-      "data-wallpaper",
-      settings.wallpaper || "flat-gray"
-    );
   }
 
   const bookmarksSection = document.querySelector(".bookmarks-section");
   if (bookmarksSection) {
     bookmarksSection.style.display = settings.bookmarksEnabled
-      ? "block"
+      ? ""
       : "none";
   }
 
@@ -52,8 +48,6 @@ export function applySettings(settings) {
 }
 
 function populateSettingsForm(settings) {
-  if (elements.wallpaperSelect)
-    elements.wallpaperSelect.value = settings.wallpaper || "flat-gray";
   if (elements.defaultSearchEngineSelect)
     elements.defaultSearchEngineSelect.value = settings.defaultSearchEngine || "google";
   if (elements.clockTypeSelect)
@@ -67,9 +61,6 @@ function populateSettingsForm(settings) {
 
 export function saveSettings() {
   const settings = {
-    wallpaper: elements.wallpaperSelect
-      ? elements.wallpaperSelect.value
-      : "flat-gray",
     defaultSearchEngine: elements.defaultSearchEngineSelect
       ? elements.defaultSearchEngineSelect.value
       : "google",
@@ -140,15 +131,19 @@ export function resetSettings() {
   currentSettings = { ...defaultSettings };
 
   if (typeof chrome !== "undefined" && chrome.storage) {
-    chrome.storage.sync.set({ settings: defaultSettings }, function () {
-      chrome.storage.local.remove(
-        ["customWallpaper", "wallpaperType", "wallpaperUrl"],
-        function () {
-          window.location.reload();
-        }
-      );
+    chrome.storage.sync.remove(["gridLayout"], function () {
+      chrome.storage.sync.set({ settings: defaultSettings }, function () {
+        chrome.storage.local.remove(
+          ["customWallpaper", "wallpaperType", "wallpaperUrl"],
+          function () {
+            try { localStorage.removeItem("gridLayout"); } catch (_) {}
+            window.location.reload();
+          }
+        );
+      });
     });
   } else {
+    try { localStorage.removeItem("gridLayout"); } catch (_) {}
     window.location.reload();
   }
 }
