@@ -5,11 +5,13 @@ export const elements = {
   bookmarksGrid: null,
   settingsBtn: null,
   settingsModal: null,
-  wallpaperSelect: null,
   defaultSearchEngineSelect: null,
   clockTypeSelect: null,
   languageSelect: null,
-  bookmarksEnabledCheckbox: null,
+  clockVisibleToggle: null,
+  calendarVisibleToggle: null,
+  todoVisibleToggle: null,
+  bookmarksVisibleToggle: null,
   saveSettingsBtn: null,
   customWallpaperInput: null,
   customWallpaperPreview: null,
@@ -18,25 +20,33 @@ export const elements = {
   urlWallpaperBtn: null,
   wallpaperTabs: null,
   resetSettingsBtn: null,
+  calendarWidget: null,
+  todoWidget: null,
+  editLayoutBtn: null,
 };
 
 export function initializeElements() {
-  elements.searchInput = document.getElementById("search-input");
-  elements.searchBtn = document.getElementById("search-btn");
-  elements.bookmarksGrid = document.getElementById("bookmarks-grid");
-  elements.settingsBtn = document.getElementById("settings-btn");
-  elements.settingsModal = document.getElementById("settings-modal");
-  elements.wallpaperSelect = document.getElementById("wallpaper-select");
+  elements.searchInput              = document.getElementById("search-input");
+  elements.searchBtn                = document.getElementById("search-btn");
+  elements.bookmarksGrid            = document.getElementById("bookmarks-grid");
+  elements.settingsBtn              = document.getElementById("settings-btn");
+  elements.settingsModal            = document.getElementById("settings-modal");
   elements.defaultSearchEngineSelect = document.getElementById("default-search-engine");
-  elements.clockTypeSelect = document.getElementById("clock-type");
-  elements.languageSelect = document.getElementById("language");
-  elements.bookmarksEnabledCheckbox = document.getElementById("bookmarks-enabled");
-  elements.saveSettingsBtn = document.getElementById("save-settings");
-  elements.customWallpaperInput = document.getElementById("custom-wallpaper-input");
-  elements.customWallpaperPreview = document.getElementById("custom-wallpaper-preview");
-  elements.removeWallpaperBtn = document.getElementById("remove-wallpaper-btn");
-  elements.wallpaperUrlInput = document.getElementById("wallpaper-url-input");
-  elements.urlWallpaperBtn = document.getElementById("url-wallpaper-btn");
-  elements.wallpaperTabs = document.querySelectorAll(".wallpaper-tab");
-  elements.resetSettingsBtn = document.getElementById("reset-settings-btn");
+  elements.clockTypeSelect          = document.getElementById("clock-type");
+  elements.languageSelect           = document.getElementById("language");
+  elements.clockVisibleToggle       = document.getElementById("clock-visible");
+  elements.calendarVisibleToggle    = document.getElementById("calendar-visible");
+  elements.todoVisibleToggle        = document.getElementById("todo-visible");
+  elements.bookmarksVisibleToggle   = document.getElementById("bookmarks-visible");
+  elements.saveSettingsBtn          = document.getElementById("save-settings");
+  elements.customWallpaperInput     = document.getElementById("custom-wallpaper-input");
+  elements.customWallpaperPreview   = document.getElementById("custom-wallpaper-preview");
+  elements.removeWallpaperBtn       = document.getElementById("remove-wallpaper-btn");
+  elements.wallpaperUrlInput        = document.getElementById("wallpaper-url-input");
+  elements.urlWallpaperBtn          = document.getElementById("url-wallpaper-btn");
+  elements.wallpaperTabs            = document.querySelectorAll(".wallpaper-tab");
+  elements.resetSettingsBtn         = document.getElementById("reset-settings-btn");
+  elements.calendarWidget           = document.getElementById("calendar-widget");
+  elements.todoWidget               = document.getElementById("todo-widget");
+  elements.editLayoutBtn            = document.getElementById("edit-layout-btn");
 }

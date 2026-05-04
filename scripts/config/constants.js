@@ -43,9 +43,11 @@ export const config = {
 
 // Default Settings
 export const defaultSettings = {
-  wallpaper: "flat-gray",
   defaultSearchEngine: "google",
   clockType: "analog",
   language: "en",
-  bookmarksEnabled: true,
+  clockVisible: true,
+  calendarVisible: true,
+  todoVisible: true,
+  bookmarksVisible: true,
 };

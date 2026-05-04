@@ -1,7 +1,8 @@
 // Main Application Entry Point
 import { initializeElements, elements } from './modules/elements.js';
-import { loadSettings, saveSettings, applySettings, resetSettings } from './modules/settings.js';
-import { setTranslations, openSettingsModal, closeSettingsModal, closeFolderPopup, switchWallpaperTab, setCurrentLanguage } from './modules/ui.js';
+import { loadSettings, saveSettings, resetSettings } from './modules/settings.js';
+import { setTranslations, openSettingsModal, closeSettingsModal, closeFolderPopup,
+         switchWallpaperTab, switchSettingsTab, setCurrentLanguage } from './modules/ui.js';
 import { startClock, applyClockType } from './modules/clock.js';
 import { loadBrowserBookmarks } from './modules/bookmarks.js';
 import { performSearch } from './modules/search.js';
@@ -10,10 +11,11 @@ import {
   handleCustomWallpaperUpload,
   handleUrlWallpaper,
   removeCustomWallpaper,
-  updateCustomWallpaperPreview
 } from './modules/wallpaper.js';
+import { renderCalendar, refreshCalendarTranslations } from './modules/calendar.js';
+import { initTodo, refreshTodoTranslations } from './modules/todo.js';
+import { initGrid } from './modules/grid.js';
 
-// Initialize application
 document.addEventListener("DOMContentLoaded", function () {
   try {
     initializeElements();
@@ -23,31 +25,29 @@ document.addEventListener("DOMContentLoaded", function () {
     startClock();
     loadBrowserBookmarks();
     setTranslations();
+    if (elements.calendarWidget) renderCalendar(elements.calendarWidget);
+    if (elements.todoWidget) initTodo(elements.todoWidget);
+    initGrid();
   } catch (error) {
     console.error("Error initializing NewTab Pro:", error);
   }
 });
 
-// Setup all event listeners
 function setupEventListeners() {
-  // Search functionality
+  // Search
   if (elements.searchBtn) {
     elements.searchBtn.addEventListener("click", performSearch);
   }
-
   if (elements.searchInput) {
-    elements.searchInput.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        performSearch();
-      }
+    elements.searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") performSearch();
     });
   }
 
-  // Settings modal
+  // Settings modal open/close
   if (elements.settingsBtn) {
     elements.settingsBtn.addEventListener("click", openSettingsModal);
   }
-
   document.querySelectorAll(".close").forEach((closeBtn) => {
     if (closeBtn.classList.contains("folder-close")) {
       closeBtn.addEventListener("click", closeFolderPopup);
@@ -55,121 +55,71 @@ function setupEventListeners() {
       closeBtn.addEventListener("click", closeSettingsModal);
     }
   });
-
-  // Collapsible sections
-  setupCollapsibleSections();
-
-  window.addEventListener("click", function (e) {
-    if (elements.settingsModal && e.target === elements.settingsModal) {
-      closeSettingsModal();
-    }
+  window.addEventListener("click", (e) => {
+    if (elements.settingsModal && e.target === elements.settingsModal) closeSettingsModal();
     const folderModal = document.getElementById("folder-popup-modal");
-    if (folderModal && e.target === folderModal) {
-      closeFolderPopup();
-    }
+    if (folderModal && e.target === folderModal) closeFolderPopup();
   });
 
-  // Save settings
-  if (elements.saveSettingsBtn) {
-    elements.saveSettingsBtn.addEventListener("click", saveSettings);
-  }
+  // Settings tabs
+  document.querySelectorAll(".settings-tab-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      switchSettingsTab(this.dataset.tab);
+    });
+  });
 
-  // Reset settings
-  if (elements.resetSettingsBtn) {
-    elements.resetSettingsBtn.addEventListener("click", resetSettings);
-  }
+  // Save / Reset
+  if (elements.saveSettingsBtn)  elements.saveSettingsBtn.addEventListener("click", saveSettings);
+  if (elements.resetSettingsBtn) elements.resetSettingsBtn.addEventListener("click", resetSettings);
 
-  // Custom wallpaper upload
+  // Wallpaper upload
   if (elements.customWallpaperInput) {
-    elements.customWallpaperInput.addEventListener(
-      "change",
-      handleCustomWallpaperUpload
-    );
+    elements.customWallpaperInput.addEventListener("change", handleCustomWallpaperUpload);
   }
-
   const chooseWallpaperBtn = document.getElementById("choose-wallpaper-btn");
   if (chooseWallpaperBtn && elements.customWallpaperInput) {
-    chooseWallpaperBtn.addEventListener("click", function () {
-      elements.customWallpaperInput.click();
-    });
+    chooseWallpaperBtn.addEventListener("click", () => elements.customWallpaperInput.click());
   }
-
   const removeWallpaperBtn = document.getElementById("remove-wallpaper-btn");
   if (removeWallpaperBtn) {
     removeWallpaperBtn.addEventListener("click", removeCustomWallpaper);
   }
 
-  // URL wallpaper
+  // Wallpaper URL
   if (elements.urlWallpaperBtn) {
     elements.urlWallpaperBtn.addEventListener("click", handleUrlWallpaper);
   }
-
   if (elements.wallpaperUrlInput) {
-    elements.wallpaperUrlInput.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        handleUrlWallpaper();
-      }
+    elements.wallpaperUrlInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleUrlWallpaper();
     });
   }
 
-  // Wallpaper tabs
+  // Wallpaper inner tabs
   elements.wallpaperTabs.forEach((tab) => {
     tab.addEventListener("click", function () {
       switchWallpaperTab(this.dataset.tab);
     });
   });
 
-  // Clock type change
+  // Clock type live preview
   if (elements.clockTypeSelect) {
     elements.clockTypeSelect.addEventListener("change", function () {
-      const clockType = this.value;
-      applyClockType(clockType);
+      applyClockType(this.value);
     });
   }
 
-  // Language change
+  // Language live preview
   if (elements.languageSelect) {
     elements.languageSelect.addEventListener("change", function () {
       setCurrentLanguage(this.value);
       setTranslations();
+      refreshCalendarTranslations();
+      refreshTodoTranslations();
     });
   }
 }
 
-// Setup collapsible sections
-function setupCollapsibleSections() {
-  const sectionHeaders = document.querySelectorAll('.section-header');
-
-  sectionHeaders.forEach(header => {
-    header.addEventListener('click', function() {
-      const content = this.nextElementSibling;
-      const isActive = this.classList.contains('active');
-
-      // Toggle current section
-      this.classList.toggle('active');
-      content.classList.toggle('active');
-
-      // Optional: close other sections (accordion style)
-      // Uncomment below to enable accordion behavior
-      /*
-      sectionHeaders.forEach(otherHeader => {
-        if (otherHeader !== this) {
-          otherHeader.classList.remove('active');
-          otherHeader.nextElementSibling.classList.remove('active');
-        }
-      });
-      */
-    });
-  });
-
-  // Open first section by default
-  if (sectionHeaders.length > 0) {
-    sectionHeaders[0].classList.add('active');
-    sectionHeaders[0].nextElementSibling.classList.add('active');
-  }
-}
-
-// Export API for global access if needed
 window.NewTabPro = {
   removeCustomWallpaper,
   setTranslations,

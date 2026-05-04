@@ -51,10 +51,10 @@ export function showNotification(message, type = "info") {
   notification.textContent = message;
 
   const colors = {
-    success: "#4CAF50",
-    error: "#f44336",
-    info: "#2196F3",
-    warning: "#ff9800",
+    success: "#141414",
+    error: "#1a1010",
+    info: "#141414",
+    warning: "#1a1a10",
   };
 
   notification.style.cssText = `
@@ -62,15 +62,15 @@ export function showNotification(message, type = "info") {
     top: 20px;
     right: 20px;
     background: ${colors[type] || colors.info};
-    color: white;
+    color: #fff;
     padding: 1rem 1.5rem;
     border-radius: 8px;
     z-index: 10000;
     animation: slideIn 0.3s ease-out;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     font-weight: 500;
     max-width: 300px;
     word-wrap: break-word;
+    border: 1px solid #1e1e1e;
   `;
 
   document.body.appendChild(notification);
@@ -89,8 +89,18 @@ export function openSettingsModal() {
   const settingsModal = document.getElementById("settings-modal");
   if (settingsModal) {
     settingsModal.style.display = "block";
+    switchSettingsTab("appearance");
     switchWallpaperTab("upload");
   }
+}
+
+export function switchSettingsTab(tabName) {
+  document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.settings-tab-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.dataset.panel === tabName);
+  });
 }
 
 export function closeSettingsModal() {
