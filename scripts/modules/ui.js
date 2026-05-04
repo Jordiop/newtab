@@ -89,8 +89,18 @@ export function openSettingsModal() {
   const settingsModal = document.getElementById("settings-modal");
   if (settingsModal) {
     settingsModal.style.display = "block";
+    switchSettingsTab("appearance");
     switchWallpaperTab("upload");
   }
+}
+
+export function switchSettingsTab(tabName) {
+  document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.settings-tab-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.dataset.panel === tabName);
+  });
 }
 
 export function closeSettingsModal() {

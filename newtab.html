@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Tab</title>
     <link rel="stylesheet" href="styles/newtab.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Oxanium:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles/clock.css">
 </head>
@@ -71,14 +73,25 @@
                 <span class="close">&times;</span>
             </div>
 
-            <div class="settings-sections-container">
-                <div class="settings-section collapsible">
-                <div class="section-header" data-section="appearance">
-                    <i class="fas fa-palette section-icon"></i>
-                    <h4 data-i18n="appearance">Appearance</h4>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="section-content">
+            <nav class="settings-tabs-nav">
+                <button class="settings-tab-btn active" data-tab="appearance">
+                    <i class="fas fa-palette"></i>
+                    <span data-i18n="appearance">Appearance</span>
+                </button>
+                <button class="settings-tab-btn" data-tab="widgets">
+                    <i class="fas fa-th-large"></i>
+                    <span data-i18n="widgets">Widgets</span>
+                </button>
+                <button class="settings-tab-btn" data-tab="general">
+                    <i class="fas fa-sliders-h"></i>
+                    <span data-i18n="general">General</span>
+                </button>
+            </nav>
+
+            <div class="settings-tab-body">
+
+                <!-- Appearance -->
+                <div class="settings-tab-panel active" data-panel="appearance">
                     <div class="form-group">
                         <label for="custom-wallpaper-input" data-i18n="customWallpaper">Custom Wallpaper</label>
 
@@ -122,15 +135,55 @@
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <div class="settings-section collapsible">
-                <div class="section-header" data-section="search">
-                    <i class="fas fa-search section-icon"></i>
-                    <h4 data-i18n="search">Search</h4>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
+                <!-- Widgets -->
+                <div class="settings-tab-panel" data-panel="widgets">
+                    <div class="widget-toggle-list">
+                        <div class="widget-toggle-row">
+                            <div class="widget-toggle-info">
+                                <i class="fas fa-clock"></i>
+                                <span class="widget-toggle-name" data-i18n="clock">Clock</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="clock-visible" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="widget-toggle-row">
+                            <div class="widget-toggle-info">
+                                <i class="fas fa-calendar-days"></i>
+                                <span class="widget-toggle-name" data-i18n="calendar">Calendar</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="calendar-visible" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="widget-toggle-row">
+                            <div class="widget-toggle-info">
+                                <i class="fas fa-list-check"></i>
+                                <span class="widget-toggle-name" data-i18n="todo">To-Do</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="todo-visible" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="widget-toggle-row">
+                            <div class="widget-toggle-info">
+                                <i class="fas fa-bookmark"></i>
+                                <span class="widget-toggle-name" data-i18n="bookmarks">Bookmarks</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="bookmarks-visible" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div class="section-content">
+
+                <!-- General -->
+                <div class="settings-tab-panel" data-panel="general">
                     <div class="form-group">
                         <label for="default-search-engine" data-i18n="defaultSearchEngine">Default Search Engine</label>
                         <select id="default-search-engine">
@@ -139,16 +192,6 @@
                             <option value="brave">Brave</option>
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <div class="settings-section collapsible">
-                <div class="section-header" data-section="clock">
-                    <i class="fas fa-clock section-icon"></i>
-                    <h4 data-i18n="clock">Clock</h4>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="section-content">
                     <div class="form-group">
                         <label for="clock-type" data-i18n="clockType">Clock Type</label>
                         <select id="clock-type">
@@ -156,16 +199,6 @@
                             <option value="digital">Digital Clock</option>
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <div class="settings-section collapsible">
-                <div class="section-header" data-section="language">
-                    <i class="fas fa-language section-icon"></i>
-                    <h4 data-i18n="language">Language</h4>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="section-content">
                     <div class="form-group">
                         <label for="language" data-i18n="language">Language</label>
                         <select id="language">
@@ -175,24 +208,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <div class="settings-section collapsible">
-                <div class="section-header" data-section="features">
-                    <i class="fas fa-sliders-h section-icon"></i>
-                    <h4 data-i18n="features">Features</h4>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="section-content">
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="bookmarks-enabled">
-                            <span class="checkmark"></span>
-                            <span data-i18n="bookmarksEnabled">Show bookmarks</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
             </div>
 
             <div class="settings-actions">
